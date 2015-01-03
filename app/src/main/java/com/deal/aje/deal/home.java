@@ -20,6 +20,9 @@ import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutionException;
+
+import mongo.Connect;
 
 
 public class home extends ActionBarActivity {
@@ -33,18 +36,15 @@ public class home extends ActionBarActivity {
         TextView tv = (TextView) findViewById(R.id.textView);
         tv.setText("okay");
 
-        try{
-            Mongo Client = new Mongo("140.113.216.123");
-            DB db = Client.getDB("cloud");
-            DBCollection collect = db.getCollection("User");
-            String str = collect.findOne().get("username").toString();
-
-            tv.setText(str);
-
-
-           Client.close();
-        } catch (UnknownHostException e){
-
+        Connect c = new Connect();
+        c.execute();
+        try {
+            String s = c.get();
+            tv.setText(s);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
 
         Button btn_sell = (Button) findViewById(R.id.button_sell);
