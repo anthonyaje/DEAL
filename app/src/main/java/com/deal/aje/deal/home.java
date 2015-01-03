@@ -8,6 +8,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+import com.mongodb.WriteConcern;
+import com.mongodb.WriteResult;
+
+import java.net.UnknownHostException;
 
 
 public class home extends ActionBarActivity {
@@ -17,6 +29,23 @@ public class home extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         final Context context = this;
+
+        TextView tv = (TextView) findViewById(R.id.textView);
+        tv.setText("okay");
+
+        try{
+            Mongo Client = new Mongo("140.113.216.123");
+            DB db = Client.getDB("cloud");
+            DBCollection collect = db.getCollection("User");
+            String str = collect.findOne().get("username").toString();
+
+            tv.setText(str);
+
+
+           Client.close();
+        } catch (UnknownHostException e){
+
+        }
 
         Button btn_sell = (Button) findViewById(R.id.button_sell);
         btn_sell.setOnClickListener(new View.OnClickListener() {
