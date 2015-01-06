@@ -11,13 +11,13 @@ public class Message extends MongoObj {
     public Message() 
     {
         this.collectionName = "Message";
-        columns = new String[] {"id", "user_1", "user_2", "timestamp", "message"};
+        columns = new String[] {"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp"};
     }
     
     public Message(DBObject instance)
     {
         this.collectionName = "Message";
-        columns = new String[] {"id", "user_1", "user_2", "timestamp", "message"};
+        columns = new String[] {"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp"};
         for(int i=1; i<columns.length; i++)
         {
             this.setValue(i, instance.get(columns[i]));
@@ -28,6 +28,9 @@ public class Message extends MongoObj {
     private String user_2;
     private long timestamp;
     private String message;
+    private String offer_id;
+    private String request_id;
+    private long read_timestamp;
 
     @Override
     public Object getValue(int id) {
@@ -42,6 +45,12 @@ public class Message extends MongoObj {
                 return getTimestamp();
             case 4:
                 return getMessage();
+            case 5:
+                return getOffer_id();
+            case 6:
+                return getRequest_id();
+            case 7:
+                return getRead_timestamp();
             default:
                 return null;
         }
@@ -64,6 +73,15 @@ public class Message extends MongoObj {
                 break;
             case 4:
                 setMessage(value.toString());
+                break;
+            case 5:
+                setOffer_id(value.toString());
+                break;
+            case 6:
+                setRequest_id(value.toString());
+                break;
+            case 7:
+                setRead_timestamp(Long.parseLong(value.toString()));
                 break;
         }
     }
@@ -122,5 +140,29 @@ public class Message extends MongoObj {
      */
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getOffer_id() {
+        return offer_id;
+    }
+
+    public void setOffer_id(String offer_id) {
+        this.offer_id = offer_id;
+    }
+
+    public String getRequest_id() {
+        return request_id;
+    }
+
+    public void setRequest_id(String request_id) {
+        this.request_id = request_id;
+    }
+
+    public long getRead_timestamp() {
+        return read_timestamp;
+    }
+
+    public void setRead_timestamp(long read_timestamp) {
+        this.read_timestamp = read_timestamp;
     }
 }

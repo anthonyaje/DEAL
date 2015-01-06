@@ -1,5 +1,12 @@
 package mongo.controller;
 
+import mongo.controller.async.TaskCount;
+import mongo.controller.async.TaskDelete;
+import mongo.controller.async.TaskFilterCollection;
+import mongo.controller.async.TaskFindOne;
+import mongo.controller.async.TaskGetCollection;
+import mongo.controller.async.TaskInsert;
+import mongo.controller.async.TaskShowValue;
 import mongo.exception.MongoException;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -13,6 +20,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 /**
  *
@@ -22,7 +30,7 @@ public class DbController {
 
     public static String IP = "140.113.216.123";
     public static String database = "cloud";
-    Mongo mongoClient;
+    private Mongo mongoClient;
 
     private DbController() {
     }
@@ -34,6 +42,10 @@ public class DbController {
     private static class DbControllerHolder {
 
         private static final DbController INSTANCE = new DbController();
+    }
+
+    public Mongo getMongoClient() {
+        return mongoClient;
     }
     
     public static String generateUID()
@@ -47,11 +59,13 @@ public class DbController {
         return mongoClient.getDB(database);
     }
 
-    public void Open() {
+    public Mongo Open() {
         try {
             mongoClient = new Mongo(IP);
+            return mongoClient;
         } catch (UnknownHostException ex) {
             System.err.println("Unknown host exception : Open()\n" + ex.getMessage());
+            return null;
         }
     }
 
@@ -62,14 +76,24 @@ public class DbController {
     }
 
     /**
-     * Get all data from table / collection
-     * @param tablename Table name or Collection name
-     * @return 
+     * Get all data from table / collection (Async)
+     * @param table Table name or Collection name
+     * @return collection (table)
+     * @return collection (table)
      */
-    public DBCollection getCollection(String tablename) {
-        DB db = mongoClient.getDB(database);
-        DBCollection coll = db.getCollection(tablename);
-        return coll;
+    public DBCollection getCollection(String table) {
+        TaskGetCollection task = new TaskGetCollection();
+        task.execute(table);
+        try {
+            DBCollection collection = task.get();
+            return collection;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     /**
@@ -80,9 +104,58 @@ public class DbController {
      * @return 
      */
     public DBCursor filterCollection(DBCollection coll, String column, String value) {
-        BasicDBObject query = new BasicDBObject(column, value);
-        DBCursor find = coll.find(query);
-        return find;
+        TaskFilterCollection task = new TaskFilterCollection();
+        task.execute(coll, column, value);
+        try {
+            DBCursor find = task.get();
+            return find;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Return all data
+     * @param coll Collection instance
+     * @return
+     */
+    public DBCursor findAll(DBCollection coll) {
+        TaskFilterCollection task = new TaskFilterCollection();
+        task.execute(coll);
+        try {
+            DBCursor find = task.get();
+            return find;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Return 1 data
+     * @param table Table name
+     * @return
+     */
+    public DBObject findOne(String table) {
+        TaskFindOne task = new TaskFindOne();
+        task.execute(table);
+        try {
+            DBObject find = task.get();
+            return find;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     /**
@@ -93,17 +166,18 @@ public class DbController {
      * @return 
      */
     public List<String> showAllValue(DBCursor find, String[] columnNames, char delimiter) {
-        List<String> result = new ArrayList();
-        while (find.hasNext()) {
-            DBObject next = find.next();
-            StringBuilder sb = new StringBuilder();
-            for(int i=0; i<columnNames.length; i++)
-            {
-                sb.append(next.get(columnNames[i]).toString());
-                if(i<(columnNames.length-1)) sb.append(delimiter);
-            }
+        TaskShowValue task = new TaskShowValue();
+        task.execute(find, columnNames, delimiter);
+        try {
+            List<String> result = task.get();
+            return result;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
         }
-        return result;
     }
     
     /**
@@ -112,7 +186,8 @@ public class DbController {
      */
     public void deleteCollection(String tablename)
     {
-        getCollection(tablename).drop();
+        TaskDelete task = new TaskDelete();
+        task.execute(tablename);
     }
     
     /**
@@ -122,7 +197,18 @@ public class DbController {
      */
     public long countCollection(String tablename)
     {
-        return getCollection(tablename).count();
+        TaskCount task = new TaskCount();
+        task.execute(tablename);
+        try {
+            Long result = task.get();
+            return result;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return -1;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
     
     /**
@@ -133,10 +219,17 @@ public class DbController {
      * @throws MongoException 
      */
     public WriteResult insertData(DBCollection coll, BasicDBObject doc) throws MongoException {
-        if(mongoClient==null) throw new MongoException("Mongo Client is closed while inserting data");
-        if(coll==null) throw new MongoException("Collection is null while inserting data");
-        if(doc==null) throw new MongoException("Basic DB Object is null while inserting data");
-        mongoClient.setWriteConcern(WriteConcern.JOURNAL_SAFE);
-        return coll.insert(doc);
+        TaskInsert task = new TaskInsert();
+        task.execute(coll, doc);
+        try {
+            WriteResult result = task.get();
+            return result;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

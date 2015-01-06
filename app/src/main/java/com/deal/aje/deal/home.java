@@ -23,6 +23,8 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 
 import mongo.Connect;
+import mongo.controller.DbController;
+import mongo.entity.User;
 
 
 public class home extends ActionBarActivity {
@@ -36,15 +38,13 @@ public class home extends ActionBarActivity {
         TextView tv = (TextView) findViewById(R.id.textView);
         tv.setText("okay");
 
-        Connect c = new Connect();
-        c.execute();
-        try {
-            String s = c.get();
-            tv.setText(s);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+        // Testing read user
+        User u = new User();
+        DBObject obj = DbController.getInstance().findOne(u.getCollectionName());
+        if(obj!=null)
+        {
+            u = new User(obj);
+            tv.setText(u.getUsername());
         }
 
         Button btn_sell = (Button) findViewById(R.id.button_sell);

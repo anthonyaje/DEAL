@@ -1,9 +1,9 @@
 package mongo;
 
-import cloud.controller.DbController;
-import cloud.controller.ImageController;
-import cloud.entity.Setting;
-import cloud.entity.User;
+import mongo.controller.DbController;
+import mongo.controller.ImageController;
+import mongo.entity.Setting;
+import mongo.entity.User;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
