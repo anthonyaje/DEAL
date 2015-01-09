@@ -7,5 +7,8 @@
     <string name="title_activity_find_item">FindItem</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_sell_item">SellItem</string>
+    <string name="title_activity_login">LoginActivity</string>
+
+    <string name="facebook_app_id">380304605427548</string>
 
 </resources>
