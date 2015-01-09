@@ -26,6 +26,8 @@ import mongo.Connect;
 import mongo.controller.DbController;
 import mongo.entity.User;
 
+import com.facebook.Session;
+
 
 public class home extends ActionBarActivity {
 
