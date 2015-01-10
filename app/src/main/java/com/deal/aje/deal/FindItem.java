@@ -12,6 +12,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -26,6 +30,7 @@ public class FindItem extends ActionBarActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_item);
+        //Getting Location
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (!locEnabled) {
@@ -44,6 +49,23 @@ public class FindItem extends ActionBarActivity implements LocationListener {
         } else {
             Log.d("DEAL_LOG", "Location Unavailable");
         }
+
+        final EditText et_hashtag = (EditText) findViewById(R.id.editText_hashtag);
+        final EditText et_desc = (EditText) findViewById(R.id.editText_desc);
+        Button next_find = (Button) findViewById(R.id.button_find);
+        next_find.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long time= System.currentTimeMillis();
+                int complete = 0;
+                String hashtag = et_hashtag.getText().toString();
+                String desc = et_desc.getText().toString();
+                //TODO
+                // create send data to database (GPS, TIME, complete)
+                Intent list_intent = new Intent(v.getContext(), ListItem.class);
+                startActivity(list_intent);
+            }
+        });
     }
 
     @Override

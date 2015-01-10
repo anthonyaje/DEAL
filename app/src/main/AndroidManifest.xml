@@ -4,20 +4,21 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
         <activity
             android:name=".home"
             android:label="@string/app_name" >
-
         </activity>
         <activity
             android:name=".FindItem"
@@ -36,13 +37,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.facebook.LoginActivity"
             android:theme="@style/AppTheme" >
         </activity>
-
+        <activity
+            android:name=".ListItem"
+            android:label="@string/title_activity_list_item" >
+        </activity>
     </application>
 
-</manifest>
-    <!-- android:label="@string/title_activity_login" > -->
+</manifest> <!-- android:label="@string/title_activity_login" > -->

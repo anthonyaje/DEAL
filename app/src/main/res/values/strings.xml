@@ -8,7 +8,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_sell_item">SellItem</string>
     <string name="title_activity_login">LoginActivity</string>
-
     <string name="facebook_app_id">380304605427548</string>
+    <string name="title_activity_list_item">ListItem</string>
 
 </resources>
