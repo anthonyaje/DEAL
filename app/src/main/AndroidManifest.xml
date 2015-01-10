@@ -2,10 +2,29 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.deal.aje.deal" >
 
+    <!-- GCM requires Android SDK version 2.2 (API level 8) or above. -->
+    <!-- The targetSdkVersion is optional, but it's always a good practice
+         to target higher versions. -->
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="21"/>
+
+    <!-- GCM requires a Google account. -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
+    <!-- Keeps the processor from sleeping when a message is received. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <permission android:name="com.google.android.gcm.demo.app.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.google.android.gcm.demo.app.permission.C2D_MESSAGE" />
+
+    <!-- This app has permission to register and receive data message. -->
+    <uses-permission
+        android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <application
         android:allowBackup="true"
@@ -41,10 +60,28 @@
             android:name="com.facebook.LoginActivity"
             android:theme="@style/AppTheme" >
         </activity>
+
         <activity
             android:name=".ListItem"
             android:label="@string/title_activity_list_item" >
         </activity>
+        <!--
+          WakefulBroadcastReceiver that will receive intents from GCM
+          services and hand them to the custom IntentService.
+
+          The com.google.android.c2dm.permission.SEND permission is necessary
+          so only GCM services can send data messages for the app.
+        -->
+        <receiver
+            android:name="gcm.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <!-- Receives the actual messages. -->
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.deal.aje.deal" />
+            </intent-filter>
+        </receiver>
+        <service android:name="gcm.GcmIntentService" />
     </application>
 
 </manifest> <!-- android:label="@string/title_activity_login" > -->
