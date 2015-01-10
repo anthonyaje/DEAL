@@ -2,8 +2,10 @@ package com.deal.aje.deal;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,31 +26,39 @@ import java.util.concurrent.ExecutionException;
 
 import mongo.Connect;
 import mongo.controller.DbController;
+import mongo.entity.Setting;
 import mongo.entity.User;
 
 import com.facebook.Session;
 
 
 public class home extends ActionBarActivity {
+    SharedPreferences sp = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         final Context context = this;
-
+        sp = getSharedPreferences("config", Context.MODE_PRIVATE);
+        String user_name = sp.getString("UserName","null");
+        Log.d("DEAL","username from sp: "+user_name);
         TextView tv = (TextView) findViewById(R.id.textView);
-        tv.setText("okay");
 
-        // Testing read user
+    /*    // Testing read user
         User u = new User();
-        DBObject obj = DbController.getInstance().findOne(u.getCollectionName());
-        if(obj!=null)
+        DBCollection collection = DbController.getInstance().getCollection(u.getCollectionName());
+        DBCursor cursor = DbController.getInstance().filterCollection(collection, u.getColumns()[1], user_name);
+        while(cursor.hasNext())
         {
-            u = new User(obj);
-            tv.setText(u.getUsername());
+            DBObject next = cursor.next();
+            if(next!=null)
+            {
+                u = new User(next);
+                tv.setText(u.getUsername());
+            }
         }
-
+    */
         Button btn_sell = (Button) findViewById(R.id.button_sell);
         btn_sell.setOnClickListener(new View.OnClickListener() {
             @Override

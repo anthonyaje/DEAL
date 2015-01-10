@@ -76,8 +76,10 @@ public abstract class MongoObj {
         }
         try {
             WriteResult insertData = DbController.getInstance().insertData(collection, saveMongoDB);
-            if(insertData.getError()==null)
-                System.out.println("Insert success");
+            if(insertData!=null) {
+                if (insertData.getError() == null)
+                    System.out.println("Insert success");
+            }
         } catch (MongoException ex) {
             System.err.println("Insert data error");
         }
