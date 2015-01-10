@@ -1,25 +1,23 @@
 package mongo.entity;
 
 import mongo.entity.base.MongoObj;
+
 import com.mongodb.DBObject;
 
 /**
- *
  * @author Lalala
  */
 public class User extends MongoObj {
 
     public User() {
         collectionName = "User";
-        columns = new String[]{"id", "username", "password", "email", "picture"};
+        columns = new String[]{"id", "username", "password", "email", "picture", "registration_id"};
     }
-    
-    public User(DBObject instance)
-    {
+
+    public User(DBObject instance) {
         collectionName = "User";
-        columns = new String[]{"id", "username", "password", "email", "picture"};
-        for(int i=1; i<columns.length; i++)
-        {
+        columns = new String[]{"id", "username", "password", "email", "picture", "registration_id"};
+        for (int i = 1; i < columns.length; i++) {
             this.setValue(i, instance.get(columns[i]));
         }
     }
@@ -28,6 +26,7 @@ public class User extends MongoObj {
     private String _password;
     private String _email;
     private byte[] _picture;
+    private String _registration_id;
 
     @Override
     public Object getValue(int id) {
@@ -42,6 +41,8 @@ public class User extends MongoObj {
                 return getEmail();
             case 4:
                 return getPicture();
+            case 5:
+                return getRegistrationId();
             default:
                 return null;
         }
@@ -54,16 +55,24 @@ public class User extends MongoObj {
                 // Couldn't change ID
                 break;
             case 1:
-                setUsername(value.toString());
+                if (value != null)
+                    setUsername(value.toString());
                 break;
             case 2:
-                setPassword(value.toString());
+                if (value != null)
+                    setPassword(value.toString());
                 break;
             case 3:
-                setEmail(value.toString());
+                if (value != null)
+                    setEmail(value.toString());
                 break;
             case 4:
-                setPicture((byte[])value);
+                if (value != null)
+                    setPicture((byte[]) value);
+                break;
+            case 5:
+                if (value != null)
+                    setRegistrationId(value.toString());
                 break;
         }
     }
@@ -122,5 +131,13 @@ public class User extends MongoObj {
      */
     public void setPicture(byte[] _picture) {
         this._picture = _picture;
+    }
+
+    public String getRegistrationId() {
+        return _registration_id;
+    }
+
+    public void setRegistrationId(String registration_id) {
+        this._registration_id = registration_id;
     }
 }

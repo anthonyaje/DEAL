@@ -50,23 +50,23 @@ public abstract class MongoObj {
     
     /**
      * Insert data into database
-     * @param data
-     * @param collection 
+     * @param data Data to be put
+     * @param name Collection name
      * @return null
      */
-    public String insertData(MongoObj data, DBCollection collection)
+    public String insertData(MongoObj data, String name)
     {
-        return insertData(data, collection, null);
+        return insertData(data, name, null);
     }
     
     /**
      * Insert data into database, with some picture attached
-     * @param data
-     * @param collection
+     * @param data Data to be put
+     * @param name Collection name
      * @param image
      * @return ImageID
      */
-    public String insertData(MongoObj data, DBCollection collection, byte[] image)
+    public String insertData(MongoObj data, String name, byte[] image)
     {
         BasicDBObject saveMongoDB = data.saveMongoDB();
         String imgId = null;
@@ -75,7 +75,7 @@ public abstract class MongoObj {
             imgId = insertImage(image, data.getId());
         }
         try {
-            WriteResult insertData = DbController.getInstance().insertData(collection, saveMongoDB);
+            WriteResult insertData = DbController.getInstance().insertData(name, saveMongoDB);
             if(insertData!=null) {
                 if (insertData.getError() == null)
                     System.out.println("Insert success");

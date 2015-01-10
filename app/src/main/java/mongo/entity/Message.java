@@ -1,29 +1,26 @@
 package mongo.entity;
 
 import mongo.entity.base.MongoObj;
+
 import com.mongodb.DBObject;
 
 /**
- *
  * @author Lalala
  */
 public class Message extends MongoObj {
-    public Message() 
-    {
+    public Message() {
         this.collectionName = "Message";
-        columns = new String[] {"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp"};
+        columns = new String[]{"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp"};
     }
-    
-    public Message(DBObject instance)
-    {
+
+    public Message(DBObject instance) {
         this.collectionName = "Message";
-        columns = new String[] {"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp"};
-        for(int i=1; i<columns.length; i++)
-        {
+        columns = new String[]{"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp"};
+        for (int i = 1; i < columns.length; i++) {
             this.setValue(i, instance.get(columns[i]));
         }
     }
-    
+
     private String user_1;
     private String user_2;
     private long timestamp;
@@ -63,25 +60,32 @@ public class Message extends MongoObj {
                 // Couldn't change ID
                 break;
             case 1:
-                setUser_1(value.toString());
+                if (value != null)
+                    setUser_1(value.toString());
                 break;
             case 2:
-                setUser_2(value.toString());
+                if (value != null)
+                    setUser_2(value.toString());
                 break;
             case 3:
-                setTimestamp(Long.parseLong(value.toString()));
+                if (value != null)
+                    setTimestamp(Long.parseLong(value.toString()));
                 break;
             case 4:
-                setMessage(value.toString());
+                if (value != null)
+                    setMessage(value.toString());
                 break;
             case 5:
-                setOffer_id(value.toString());
+                if (value != null)
+                    setOffer_id(value.toString());
                 break;
             case 6:
-                setRequest_id(value.toString());
+                if (value != null)
+                    setRequest_id(value.toString());
                 break;
             case 7:
-                setRead_timestamp(Long.parseLong(value.toString()));
+                if (value != null)
+                    setRead_timestamp(Long.parseLong(value.toString()));
                 break;
         }
     }

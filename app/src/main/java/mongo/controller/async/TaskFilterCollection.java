@@ -3,6 +3,7 @@ package mongo.controller.async;
 import android.os.AsyncTask;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.Mongo;
@@ -18,7 +19,8 @@ public class TaskFilterCollection extends AsyncTask<Object, Void, DBCursor> {
         if(params==null || params.length!=3) return null;
         Mongo mongoClient = DbController.getInstance().Open();
         if(mongoClient==null) return null;
-        DBCollection coll = (DBCollection) params[0];
+        DB db = mongoClient.getDB(DbController.database);
+        DBCollection coll = db.getCollection(params[0].toString());    // Table's name
         String column = (String) params[1];
         String value = (String) params[2];
         DBCursor find = null;

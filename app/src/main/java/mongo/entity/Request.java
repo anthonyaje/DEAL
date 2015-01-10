@@ -1,10 +1,10 @@
 package mongo.entity;
 
 import mongo.entity.base.MongoObj;
+
 import com.mongodb.DBObject;
 
 /**
- *
  * @author Lalala
  */
 public class Request extends MongoObj {
@@ -67,31 +67,40 @@ public class Request extends MongoObj {
                 // Couldn't change ID
                 break;
             case 1:
-                setUser_id(value.toString());
+                if (value != null)
+                    setUser_id(value.toString());
                 break;
             case 2:
-                setHashtag(value.toString());
+                if (value != null)
+                    setHashtag(value.toString());
                 break;
             case 3:
-                setDetail(value.toString());
+                if (value != null)
+                    setDetail(value.toString());
                 break;
             case 4:
-                setRange(Integer.parseInt(value.toString()));
+                if (value != null)
+                    setRange(Integer.parseInt(value.toString()));
                 break;
             case 5:
-                setGpsLat(Double.parseDouble(value.toString()));
+                if (value != null)
+                    setGpsLat(Double.parseDouble(value.toString()));
                 break;
             case 6:
-                setGpsLong(Double.parseDouble(value.toString()));
+                if (value != null)
+                    setGpsLong(Double.parseDouble(value.toString()));
                 break;
             case 7:
-                setRequest_time(Long.parseLong(value.toString()));
+                if (value != null)
+                    setRequest_time(Long.parseLong(value.toString()));
                 break;
             case 8:
-                setValid_time(Long.parseLong(value.toString()));
+                if (value != null)
+                    setValid_time(Long.parseLong(value.toString()));
                 break;
             case 9:
-                setComplete(Integer.parseInt(value.toString()));
+                if (value != null)
+                    setComplete(Integer.parseInt(value.toString()));
                 break;
         }
     }

@@ -45,9 +45,11 @@ public class Setting extends MongoObj {
         if (column == 0) {
             // Empty statement
         } else if (column == 1) {
-            setUser_id(value.toString());
+            if (value != null)
+                setUser_id(value.toString());
         } else if (column - 2 < settings.length) {
-            settings[column - 2] = value.toString();
+            if (value != null)
+                settings[column - 2] = value.toString();
         }
     }
 

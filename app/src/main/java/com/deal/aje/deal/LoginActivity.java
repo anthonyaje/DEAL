@@ -79,10 +79,9 @@ public class LoginActivity extends FragmentActivity {
                     //Store the new user to database
                     User u = new User();
                     u.setUsername(user.getName());
-                    DBCollection collection = DbController.getInstance().getCollection(u.getCollectionName());
 
                     Log.d("DEAL_LOG","Before insert Data");
-                    u.insertData(u, collection);
+                    u.insertData(u, u.getCollectionName());
                     Log.d("DEAL_LOG","After insert Data");
             /*
                     u = new User();

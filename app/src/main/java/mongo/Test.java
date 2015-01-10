@@ -76,15 +76,13 @@ public class Test {
         } catch (Exception ex) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
-        DBCollection collection = DbController.getInstance().getCollection(u.getCollectionName());
-        imageId = u.insertData(u, collection, u.getPicture());
+        imageId = u.insertData(u, u.getCollectionName(), u.getPicture());
     }
     
     private static void testReadUser(String column, String value, String outputImage)
     {
         User u = new User();
-        DBCollection collection = DbController.getInstance().getCollection(u.getCollectionName());
-        DBCursor filterCollection = DbController.getInstance().filterCollection(collection, column, value);
+        DBCursor filterCollection = DbController.getInstance().filterCollection(u.getCollectionName(), column, value);
         Iterator<DBObject> iterator = filterCollection.iterator();
         while(iterator.hasNext())
         {
