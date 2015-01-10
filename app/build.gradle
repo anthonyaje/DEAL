@@ -24,4 +24,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile project(':mongo-java-driver-2.9.3')
     compile project(':facebook')
+    compile 'com.google.android.gms:play-services:6.5.87'
+    compile 'com.googlecode.json-simple:json-simple:1.1'
 }
