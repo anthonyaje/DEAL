@@ -3,6 +3,7 @@ package mongo.controller.async;
 import android.os.AsyncTask;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
 import com.mongodb.WriteConcern;
@@ -21,7 +22,8 @@ public class TaskInsert extends AsyncTask<Object, Void, WriteResult> {
         if(params==null || params.length!=2) return null;
         Mongo mongoClient = DbController.getInstance().Open();
         if(mongoClient==null) return null;
-        DBCollection coll = (DBCollection) params[0];
+        DB db = mongoClient.getDB(DbController.database);
+        DBCollection coll = db.getCollection(params[0].toString());    // Table's name
         BasicDBObject doc = (BasicDBObject) params[1];
         if(coll==null) return null;
         if(doc==null) return null;

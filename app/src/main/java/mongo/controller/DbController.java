@@ -103,7 +103,7 @@ public class DbController {
      * @param value Value to be filtered
      * @return 
      */
-    public DBCursor filterCollection(DBCollection coll, String column, String value) {
+    public DBCursor filterCollection(String coll, String column, String value) {
         TaskFilterCollection task = new TaskFilterCollection();
         task.execute(coll, column, value);
         try {
@@ -123,7 +123,7 @@ public class DbController {
      * @param coll Collection instance
      * @return
      */
-    public DBCursor findAll(DBCollection coll) {
+    public DBCursor findAll(String coll) {
         TaskFilterCollection task = new TaskFilterCollection();
         task.execute(coll);
         try {
@@ -218,7 +218,7 @@ public class DbController {
      * @return
      * @throws MongoException 
      */
-    public WriteResult insertData(DBCollection coll, BasicDBObject doc) throws MongoException {
+    public WriteResult insertData(String coll, BasicDBObject doc) throws MongoException {
         TaskInsert task = new TaskInsert();
         task.execute(coll, doc);
         try {
