@@ -221,6 +221,8 @@ public class GcmController {
                 String target;
                 target = target_id;
                 Log.i(TAG, "Target: "+target);
+                Log.i(TAG, "Request Id: "+request_id);
+                Log.i(TAG, "Offer Id: "+offer_id);
                 Sender s = new Sender(GcmController.API_KEY);
                 Message m = new Message.Builder()
                         .addData("message", content)

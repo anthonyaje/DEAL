@@ -76,6 +76,8 @@ public class FindItem extends ActionBarActivity implements LocationListener {
                 int complete = 0;
                 String hashtag = et_hashtag.getText().toString();
                 String desc = et_desc.getText().toString();
+
+                if(hashtag==null || hashtag.trim().isEmpty()) return;
                 SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
                 String my_id = sp.getString("UserId","uid not found");
                 String gps_rage = sp.getString("GpsRange","range not found");
@@ -92,6 +94,9 @@ public class FindItem extends ActionBarActivity implements LocationListener {
                 r.setComplete(complete);
                 r.insertData(r, r.getCollectionName());
 
+                // TODO
+                // Dummy page need to be cleared
+                // If there is no matching list, then ...
                 Intent list_intent = new Intent(v.getContext(), ListItem.class);
                 list_intent.putExtra("hashtag",hashtag);
                 list_intent.putExtra("reqid",r.getId());

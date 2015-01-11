@@ -110,10 +110,13 @@ public class SellItem extends ActionBarActivity {
                 Log.i(Constants.TAG, "Offer collection name : "+new Offer().getCollectionName());
                 final List<DBObject> all_request = DbController.getInstance().findAll(new Request().getCollectionName());
                 int total_match = 0;
+                boolean match = false;
                 for (DBObject db : all_request) {
                     Request req = new Request(db);
                     for (String s : hashtag.split(" ")) // This offer
                     {
+                        if(match) break;
+                        match = false;
                         // Check for matching hashtag
                         for (String ss : req.getHashtag().split(" ")) // Compare with all request in DB
                         {
@@ -133,7 +136,8 @@ public class SellItem extends ActionBarActivity {
                                 for (DBObject obj : users) {
                                     User u = new User(obj);
                                     Log.i(Constants.TAG, "Request from : " + u.getUsername());
-                                    String user_name = sp.getString("UserName", "null");
+                                    String userid = sp.getString("UserId", "null");
+                                    Log.d(Constants.TAG, SellItem.class+" UserId : "+userid);
                                     // Send GCM notification
                                     GcmController.getInstance().sendMessage(
                                             req.getHashtag(),               // Content
@@ -141,19 +145,22 @@ public class SellItem extends ActionBarActivity {
                                             u.getUsername(),                // Target Username
                                             Constants.MESSAGE_FROM_SELLER,  // Title
                                             u.getId(),                      // Target UserID
-                                            user_name,                      // Sender UserID
+                                            userid,                         // Sender UserID
                                             req.getId(),                    // Request ID
                                             offer.getId()                   // Offer ID
                                     );
                                 }
                                 total_match++;
                                 // Already match
+                                match = true;
                                 break;
                             }
                         }
                     }
                 }
                 Log.i(Constants.TAG, "Total Match : " + total_match);
+                // TODO
+                // Back to main page
             }
         });
     }

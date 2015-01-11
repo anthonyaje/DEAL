@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mongo.controller.DbController;
+import mongo.entity.Message;
 
 /**
  * Created by Lalala on 1/6/15.
@@ -37,17 +38,26 @@ public class TaskFilterCollection extends AsyncTask<Object, Void, List<DBObject>
         DBCursor find = null;
         List<DBObject> result = new ArrayList();
         if (column == null && value == null) {
-            find = coll.find();
+            if (params[0].toString().equals(new Message().getCollectionName())) {
+                DBObject dbo = new BasicDBObject();
+                dbo.put("timestamp", 1);
+                find = coll.find().sort(dbo);
+            } else
+                find = coll.find();
         } else {
             BasicDBObject query = new BasicDBObject(column, value);
-            find = coll.find(query);
+            if (params[0].toString().equals(new Message().getCollectionName())) {
+                DBObject dbo = new BasicDBObject();
+                dbo.put("timestamp", 1);
+                find = coll.find(query).sort(dbo);
+            } else
+                find = coll.find(query);
         }
-        if(find!=null)
-        {
+        if (find != null) {
             while (find.hasNext()) {
                 DBObject next = find.next();
                 result.add(next);
-                Log.d(TAG, next.toString());
+//                Log.d(TAG, next.toString());
             }
         }
         DbController.getInstance().Close();

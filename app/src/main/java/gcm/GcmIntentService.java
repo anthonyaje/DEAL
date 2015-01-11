@@ -109,6 +109,8 @@ public class GcmIntentService extends IntentService {
         // Where to show the notification when receive notification
         Intent open = new Intent(this, ComposeMessage.class);
         Bundle bundle = new Bundle(extras);
+        Log.d(Constants.TAG, "Seller id: "+extras.get("caller_userid").toString());
+        Log.d(Constants.TAG, "Buyer id: "+extras.get("target_userid").toString());
         bundle.putString("sellerid", extras.get("caller_userid").toString());
         bundle.putString("buyerid", extras.get("target_userid").toString());
         open.putExtras(bundle);

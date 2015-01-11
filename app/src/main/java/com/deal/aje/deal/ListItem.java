@@ -57,10 +57,10 @@ public class ListItem extends ListActivity {
         //setContentView(R.layout.activity_list_item);
         //ListView item_list = (ListView) findViewById(R.id.list);
 
-        for(int i=0; i<4; i++){
-            item_arr.add(i,"item"+i);
-            desc_arr.add(i,"Desc Item"+i);
-        }
+//        for(int i=0; i<4; i++){
+//            item_arr.add(i,"item"+i);
+//            desc_arr.add(i,"Desc Item"+i);
+//        }
 
         List<DBObject> list = DbController.getInstance().findAll(new Offer().getCollectionName());
         for(DBObject it: list){
