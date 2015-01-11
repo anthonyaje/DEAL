@@ -10,5 +10,8 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="facebook_app_id">380304605427548</string>
     <string name="title_activity_list_item">ListItem</string>
+    <string name="message_option">Messages</string>
+    <string name="title_activity_messaging">Messaging</string>
+    <string name="title_activity_compose_message">ComposeMessage</string>
 
 </resources>

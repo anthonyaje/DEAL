@@ -28,10 +28,12 @@ import mongo.entity.Request;
 
 
 public class ListItem extends ListActivity {
-    List<String> item_arr = new ArrayList<String>();
+    List<String> item_arr = new ArrayList<String>();    //hashtag
     List<String> desc_arr = new ArrayList<String>();
-    List<String> sellid_arr = new ArrayList<String>();
+    List<String> sellerid_arr = new ArrayList<String>();
+    List<String> offerid_arr = new ArrayList<String>();
     List<byte[]> img_list = new ArrayList<>();
+    Request myreq=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +41,17 @@ public class ListItem extends ListActivity {
         Intent in = getIntent();
         String hashtag = in.getExtras().getString("hashtag");
         String reqid = in.getExtras().getString("reqid");
-        Request myreq=null;
+        Log.d(Constants.TAG,"hashtag"+hashtag);
+        Log.d(Constants.TAG,"reqid"+reqid);
 
-        List<DBObject> myreq_list = DbController.getInstance().filterCollection(new Offer().getCollectionName(), Request.getColumns()[0], reqid);
+        List<DBObject> myreq_list = DbController.getInstance().filterCollection(new Request().getCollectionName(), Request.getColumns()[0], reqid);
         if (myreq_list!=null && myreq_list.size()>0) {
+
+            Log.d(Constants.TAG,"req is NOT null");
             myreq = new Request(myreq_list.get(0));
+        }
+        else{
+            Log.d(Constants.TAG,"req is null");
         }
 
         //setContentView(R.layout.activity_list_item);
@@ -65,7 +73,8 @@ public class ListItem extends ListActivity {
                         item_arr.add(o.getHashtag());
                         desc_arr.add(o.getDetail());
                         img_list.add(o.getPicture());
-                        sellid_arr.add(o.getUser_id());
+                        sellerid_arr.add(o.getUser_id());
+                        offerid_arr.add(o.getId());
                         break;
                     }
                 }
@@ -79,16 +88,24 @@ public class ListItem extends ListActivity {
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
+    protected void onListItemClick(ListView l, View v, final int position, long id) {
         String item = (String) getListAdapter().getItem(position);
-        Toast.makeText(this, item + " selected from Seller: "+sellid_arr.get(position), Toast.LENGTH_SHORT).show();
+        final Context ctx = getApplicationContext();
+        Toast.makeText(this, item + " selected from Seller: "+sellerid_arr.get(position), Toast.LENGTH_SHORT).show();
         new AlertDialog.Builder(this)
                 .setTitle("Send Message")
                 .setMessage("Send Message to seller?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with delete
-                        
+                        Intent msg_intent = new Intent(ctx, ComposeMessage.class);
+                        msg_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        msg_intent.putExtra("buyerid",myreq.getUser_id());
+                        msg_intent.putExtra("sellerid",sellerid_arr.get(position));
+                        msg_intent.putExtra("offerid",offerid_arr.get(position));
+                        msg_intent.putExtra("reqid",myreq.getId());
+                        startActivity(msg_intent);
+
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

@@ -76,7 +76,6 @@ public class SellItem extends ActionBarActivity {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO bring to next intent
                 String hashtag = et_hashatg.getText().toString();
                 String desc = et_desc.getText().toString();
 

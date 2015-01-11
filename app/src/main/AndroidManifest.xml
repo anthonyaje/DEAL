@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.deal.aje.deal" >
-
-    <!-- GCM requires Android SDK version 2.2 (API level 8) or above. -->
-    <!-- The targetSdkVersion is optional, but it's always a good practice
-         to target higher versions. -->
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="21"/>
+    package="com.deal.aje.deal" > <!-- GCM requires Android SDK version 2.2 (API level 8) or above. -->
+    <!--
+ The targetSdkVersion is optional, but it's always a good practice
+         to target higher versions.
+    -->
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="21" />
 
     <!-- GCM requires a Google account. -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -17,16 +19,23 @@
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <permission android:name="com.google.android.gcm.demo.app.permission.C2D_MESSAGE"
+    <permission
+        android:name="com.google.android.gcm.demo.app.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="com.google.android.gcm.demo.app.permission.C2D_MESSAGE" />
 
     <!-- This app has permission to register and receive data message. -->
-    <uses-permission
-        android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-    <uses-feature android:name="android.hardware.camera"
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
+
+    <android:uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -35,8 +44,7 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"
-            />
+            android:value="@string/facebook_app_id" />
 
         <activity
             android:name=".home"
@@ -45,7 +53,8 @@
         <activity
             android:name=".FindItem"
             android:label="@string/title_activity_find_item"
-            android:parentActivityName="com.deal.aje.deal.home" >
+            android:parentActivityName=".home" >
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -54,7 +63,8 @@
         <activity
             android:name=".SellItem"
             android:label="@string/title_activity_sell_item"
-            android:parentActivityName="com.deal.aje.deal.home" >
+            android:parentActivityName=".home" >
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -73,11 +83,11 @@
             android:name="com.facebook.LoginActivity"
             android:theme="@style/AppTheme" >
         </activity>
-
         <activity
             android:name=".ListItem"
             android:label="@string/title_activity_list_item"
-            android:parentActivityName="com.deal.aje.deal.home" >
+            android:parentActivityName=".home" >
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -95,12 +105,33 @@
             android:name="gcm.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
+
                 <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="com.deal.aje.deal" />
             </intent-filter>
         </receiver>
+
         <service android:name="gcm.GcmIntentService" />
+
+        <activity
+            android:name=".Messaging"
+            android:label="@string/title_activity_messaging" >
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.deal.aje.deal.home" />
+        </activity>
+        <activity
+            android:name=".ComposeMessage"
+            android:label="@string/title_activity_compose_message" >
+            ->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.deal.aje.deal.home" />
+        </activity>
     </application>
 
 </manifest> <!-- android:label="@string/title_activity_login" > -->

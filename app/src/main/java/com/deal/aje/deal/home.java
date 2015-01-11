@@ -107,6 +107,11 @@ public class home extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        else if (id == R.id.action_message) {
+            Intent msg_intent = new Intent(context, Messaging.class);
+            startActivity(msg_intent);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
