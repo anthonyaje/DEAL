@@ -79,6 +79,10 @@ public class SellItem extends ActionBarActivity {
                 String hashtag = et_hashatg.getText().toString();
                 String desc = et_desc.getText().toString();
 
+                if(hashtag==null && hashtag.trim().isEmpty()) {
+                    return;
+                }
+
                 long time = System.currentTimeMillis();
                 int complete = 0;
                 SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
@@ -98,40 +102,49 @@ public class SellItem extends ActionBarActivity {
                 if (img_byteArray != null)
                     offer.setPicture(img_byteArray);
 
-                MongoObj.insertData(offer, Offer.getCollectionName());
+                MongoObj.insertData(offer, new Offer().getCollectionName());
                 Log.i(Constants.TAG, "Data stored in Database, sending all notifications on Buyer");
                 Toast.makeText(getApplicationContext(), "Data stored in Database, sending all notifications on Buyer", Toast.LENGTH_SHORT);
                 // Check on the database, if there is buyer with similar tag
-                final List<DBObject> all_request = DbController.getInstance().findAll(Request.getCollectionName());
+                Log.i(Constants.TAG, "Request collection name : "+new Request().getCollectionName());
+                Log.i(Constants.TAG, "Offer collection name : "+new Offer().getCollectionName());
+                final List<DBObject> all_request = DbController.getInstance().findAll(new Request().getCollectionName());
+                int total_match = 0;
                 for (DBObject db : all_request) {
                     Request req = new Request(db);
-                    final String hash = req.getHashtag();
-                    final String[] split = hash.split(" ");
-                    for (String s : hashtag.split(" ")) {
+                    for (String s : hashtag.split(" ")) // This offer
+                    {
                         // Check for matching hashtag
-                        for(String ss : hash.split(" ")) {
-                            if((s.contains(ss) || ss.contains(s)) && rangeCovered(req, offer))
-                            {
+                        for (String ss : req.getHashtag().split(" ")) // Compare with all request in DB
+                        {
+                            if ((s.contains(ss) || ss.contains(s)) && !s.isEmpty() && !ss.isEmpty() && rangeCovered(req, offer) && req.getComplete()==0) {
                                 // Matching request and offer
-                                List<DBObject> users = DbController.getInstance().filterCollection(User.getCollectionName(),
-                                        User.getColumns()[0],   // Check on username
+                                List<DBObject> users = DbController.getInstance().filterCollection(new User().getCollectionName(),
+                                        "id",   // Check on id
                                         req.getUser_id()
                                 );
+                                Log.i(Constants.TAG, "===============================");
+                                Log.i(Constants.TAG, "Request User: "+req.getUser_id());
                                 Log.i(Constants.TAG, "Matching request and offer");
-                                Log.i(Constants.TAG, "Request: "+req.getHashtag());
-                                Log.i(Constants.TAG, "Offer: "+offer.getHashtag());
-                                for(DBObject obj: users)
-                                {
+                                Log.i(Constants.TAG, "Request: " + req.getHashtag() + " : " + req.getId());
+                                Log.i(Constants.TAG, "Offer  : " + offer.getHashtag() + " : " + offer.getId());
+                                Log.i(Constants.TAG, "Users Size : " + users.size());
+                                Log.i(Constants.TAG, "===============================");
+                                for (DBObject obj : users) {
                                     User u = new User(obj);
-                                    Log.i(Constants.TAG, "Request from : "+u.getUsername());
+                                    Log.i(Constants.TAG, "Request from : " + u.getUsername());
                                     // Send GCM notification
-                                    GcmController.getInstance().sendMessage(Constants.MESSAGE_FROM_SELLER + ": " + req.getDetail()
-                                            , u.getRegistrationId(), u.getUsername());
+                                    GcmController.getInstance().sendMessage(req.getHashtag()
+                                            , u.getRegistrationId(), u.getUsername(), Constants.MESSAGE_FROM_SELLER, u.getId());
                                 }
+                                total_match++;
+                                // Already match
+                                break;
                             }
                         }
                     }
                 }
+                Log.i(Constants.TAG, "Total Match : " + total_match);
             }
         });
     }
@@ -177,25 +190,24 @@ public class SellItem extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean rangeCovered(Request request, Offer offer)
-    {
+    private boolean rangeCovered(Request request, Offer offer) {
         final double distance = distFrom(request.getGpsLat(), request.getGpsLong(), offer.getGpsLat(), offer.getGpsLong());
         boolean ok = false;
-        if(distance < request.getRange() && distance < offer.getRange()) ok = true;
+        if (distance < request.getRange() && distance < offer.getRange()) ok = true;
         Log.i(Constants.TAG, "Distance Accepted");
         return ok;
     }
 
     private static double distFrom(double lat1, double lng1, double lat2, double lng2) {
         double earthRadius = 6371; //kilometers
-        double dLat = Math.toRadians(lat2-lat1);
-        double dLng = Math.toRadians(lng2-lng1);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLng/2) * Math.sin(dLng/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double dist = (float) (earthRadius * c);
-        Log.i(Constants.TAG, "Distance: "+dist);
+        Log.i(Constants.TAG, "Distance: " + dist);
         return dist;
     }
 }

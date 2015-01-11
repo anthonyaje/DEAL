@@ -51,13 +51,13 @@ public class GcmController {
 
     /* Google Cloud Messaging */
 
-    AtomicInteger msgId = new AtomicInteger();
+    public static AtomicInteger GCM_ATOMIC_NOTIFICATION_ID = new AtomicInteger();
 
 
     /**
      * Tag used on log messages.
      */
-    static final String TAG = "DEAL"+GcmController.class;
+    static final String TAG = "DEAL_"+GcmController.class;
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "1";
     /**
@@ -206,26 +206,29 @@ public class GcmController {
      * @param content   Message content
      * @param target_id Destination Id
      */
-    public void sendMessage(final String content, final String target_id, final String username) {
+    public void sendMessage(final String content, final String target_id, final String username, final String title, final String userid) {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
                 String target;
                 target = target_id;
+                Log.i(TAG, "Target: "+target);
                 Sender s = new Sender(GcmController.API_KEY);
                 Message m = new Message.Builder()
                         .addData("message", content)
                         .addData("sender", username)
+                        .addData("title", title)
+                        .addData("userid", userid)
                         .build();
                 try {
                     Result send = s.send(m, target, NUMBER_OF_TRIAL); // Try 5 times
-                    Log.i(TAG, send.toString());
+                    Log.i(TAG, "Result: "+send.toString());
                     return send.toString();
                 } catch (IOException ex) {
-                    Log.e(TAG, ex.getMessage());
+                    Log.e(TAG, "IO Exception: "+ex.getMessage());
                     return ex.getMessage();
                 } catch (Exception ex) {
-                    Log.e(TAG, ex.getMessage());
+                    Log.e(TAG, "Exception: "+ex.getMessage());
                     return ex.getMessage();
                 }
             }

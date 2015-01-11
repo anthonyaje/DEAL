@@ -44,7 +44,7 @@ public class ListItem extends ListActivity {
         Log.d(Constants.TAG,"hashtag"+hashtag);
         Log.d(Constants.TAG,"reqid"+reqid);
 
-        List<DBObject> myreq_list = DbController.getInstance().filterCollection(new Request().getCollectionName(), Request.getColumns()[0], reqid);
+        List<DBObject> myreq_list = DbController.getInstance().filterCollection(new Request().getCollectionName(),new Request().getColumns()[0], reqid);
         if (myreq_list!=null && myreq_list.size()>0) {
 
             Log.d(Constants.TAG,"req is NOT null");

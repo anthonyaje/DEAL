@@ -19,7 +19,7 @@ public class Setting extends MongoObj {
         collectionName = "Setting";
         columns = new String[]{"id", "user_id", "default_range"};
         settings = new String[columns.length - 2];
-        for (int i = 1; i < columns.length; i++) {
+        for (int i = 0; i < columns.length; i++) {
             this.setValue(i, instance.get(columns[i]));
         }
     }
@@ -43,7 +43,8 @@ public class Setting extends MongoObj {
     @Override
     public final void setValue(int column, Object value) {
         if (column == 0) {
-            // Empty statement
+            if (value != null)
+                setId(value.toString());
         } else if (column == 1) {
             if (value != null)
                 setUser_id(value.toString());
