@@ -51,7 +51,7 @@ public class Messaging extends ListActivity {
         //List<String> sell_msg_body = new ArrayList<>();
 
 
-        for(int i=0; i<9;i++){
+    /*    for(int i=0; i<9;i++){
             msg_name.add("Buy from: aje "+i);
             msg_body.add("This is message from aje "+i);
         }
@@ -60,7 +60,7 @@ public class Messaging extends ListActivity {
             msg_name.add("Sell to: aje "+i);
             msg_body.add("This is message to aje "+i);
         }
-
+    */
 
         Message m = new Message();
         List<DBObject> list = DbController.getInstance().filterCollection(m.getCollectionName(), m.getColumns()[1], my_id);

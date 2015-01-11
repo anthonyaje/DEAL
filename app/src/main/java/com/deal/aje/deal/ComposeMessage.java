@@ -28,7 +28,7 @@ import mongo.entity.User;
 
 
 public class ComposeMessage extends ActionBarActivity {
-
+    EditText msg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +48,7 @@ public class ComposeMessage extends ActionBarActivity {
             Log.d(Constants.TAG, ComposeMessage.class + " Offer is NULL : " + offer_id);
         }
 
-        final EditText msg = (EditText) findViewById(R.id.editText_msg);
+        msg = (EditText) findViewById(R.id.editText_msg);
         Button btn_send = (Button) findViewById(R.id.button_send_msg);
         TextView msg_history = (TextView) findViewById(R.id.textView_history);
         msg_history.setMovementMethod(new ScrollingMovementMethod());
@@ -118,6 +118,9 @@ public class ComposeMessage extends ActionBarActivity {
                     m.setMessage(msg.getText().toString());
                     Log.d(Constants.TAG, "Message: " + m.saveMongoDB().toString());
                     m.insertData(m, m.getCollectionName());
+                    msg.setText("");
+                    Intent msg_intent = new Intent(getApplicationContext(), Messaging.class);
+                    startActivity(msg_intent);
                 }
                 // TODO
                 // Back to main page

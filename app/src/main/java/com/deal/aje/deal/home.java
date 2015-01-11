@@ -108,8 +108,8 @@ public class home extends ActionBarActivity {
             return true;
         }
         else if (id == R.id.action_message) {
-            Intent msg_intent = new Intent(context, Messaging.class);
-            startActivity(msg_intent);
+                Intent msg_intent = new Intent(context, Messaging.class);
+                startActivity(msg_intent);
             return true;
         }
 
