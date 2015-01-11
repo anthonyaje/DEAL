@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -70,6 +71,17 @@ public class LoginActivity extends FragmentActivity {
             finish();
         }
 
+        // Check device for Play Services APK. If check succeeds, proceed with GCM registration.
+        context = getApplicationContext();
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(context);
+            regid = getRegistrationId(context);
+            registerInBackground();
+            Log.i(TAG, "Registration ID: " + regid);
+        } else {
+            Log.i(TAG, "No valid Google Play Services APK found.");
+        }
+
         userName = (TextView) findViewById(R.id.user_name);
         loginBtn = (LoginButton) findViewById(R.id.fb_login_button);
         nextBtn = (Button) findViewById(R.id.btn_next);
@@ -84,20 +96,10 @@ public class LoginActivity extends FragmentActivity {
                     //String uname = sp.getString("UserName","null");
                     //Log.d("DEAL_LOG","name from sp: "+uname);
 
-                    // Check device for Play Services APK. If check succeeds, proceed with GCM registration.
-                    context = getApplicationContext();
-                    if (checkPlayServices()) {
-                        gcm = GoogleCloudMessaging.getInstance(context);
-                        regid = getRegistrationId(context);
-                        registerInBackground();
-                        Log.i(TAG, regid);
-                    } else {
-                        Log.i(TAG, "No valid Google Play Services APK found.");
-                    }
-
                     //Store the new user to database
                     User u = new User();
                     u.setUsername(user.getName());
+                    if(regid!=null)
                     u.setRegistrationId(regid);
 
                     Log.d("DEAL_LOG","Before insert Data");
@@ -182,7 +184,7 @@ public class LoginActivity extends FragmentActivity {
     /**
      * Tag used on log messages.
      */
-    static final String TAG = "DEAL";
+    static final String TAG = "DEAL_"+LoginActivity.class;
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "1";
     String regid;
@@ -211,7 +213,7 @@ public class LoginActivity extends FragmentActivity {
      * {@code SharedPreferences}.
      *
      * @param context application's context.
-     * @param regId   registration ID
+     * @param regId registration ID
      */
     private void storeRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getGcmPreferences(context);
@@ -225,11 +227,11 @@ public class LoginActivity extends FragmentActivity {
 
     /**
      * Gets the current registration ID for application on GCM service, if there is one.
-     * <p/>
+     * <p>
      * If result is empty, the app needs to register.
      *
      * @return registration ID, or empty string if there is no existing
-     * registration ID.
+     *         registration ID.
      */
     private String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGcmPreferences(context);
@@ -252,7 +254,7 @@ public class LoginActivity extends FragmentActivity {
 
     /**
      * Registers the application with GCM servers asynchronously.
-     * <p/>
+     * <p>
      * Stores the registration ID and the app versionCode in the application's
      * shared preferences.
      */
@@ -267,7 +269,6 @@ public class LoginActivity extends FragmentActivity {
                     }
                     regid = gcm.register(GcmController.SENDER_ID);
                     msg = "Device registered, registration ID=" + regid;
-                    Log.i(TAG, msg);
 
                     // You should send the registration ID to your server over HTTP, so it
                     // can use GCM/HTTP or CCS to send messages to your app.
@@ -281,6 +282,7 @@ public class LoginActivity extends FragmentActivity {
                     storeRegistrationId(context, regid);
                 } catch (IOException ex) {
                     msg = "Error :" + ex.getMessage();
+                    Log.e(TAG, msg);
                     // If there is an error, don't just keep trying to register.
                     // Require the user to click a button again, or perform
                     // exponential back-off.
@@ -290,7 +292,8 @@ public class LoginActivity extends FragmentActivity {
 
             @Override
             protected void onPostExecute(String msg) {
-                // Display something ???
+//                mDisplay.append(msg + "\n");
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
             }
         }.execute(null, null, null);
     }
@@ -315,10 +318,9 @@ public class LoginActivity extends FragmentActivity {
     private SharedPreferences getGcmPreferences(Context context) {
         // This sample app persists the registration ID in shared preferences, but
         // how you store the regID in your app is up to you.
-        return getSharedPreferences(home.class.getSimpleName(),
+        return getSharedPreferences(LoginActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
-
     /**
      * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP or CCS to send
      * messages to your app. Not needed for this demo since the device sends upstream messages
@@ -327,7 +329,6 @@ public class LoginActivity extends FragmentActivity {
     private void sendRegistrationIdToBackend() {
         // Your implementation here.
     }
-
 }
 
 /*
