@@ -50,8 +50,10 @@ public class ComposeMessage extends ActionBarActivity {
         TextView msg_history = (TextView) findViewById(R.id.textView_history);
         msg_history.setMovementMethod(new ScrollingMovementMethod());
         ImageView img = (ImageView) findViewById(R.id.imageView_compose_message);
-        img.setImageBitmap(BitmapFactory.decodeByteArray(offer.getPicture(), 0 , offer.getPicture().length));
-        
+        if(offer.getPicture() != null) {
+            img.setImageBitmap(BitmapFactory.decodeByteArray(offer.getPicture(), 0, offer.getPicture().length));
+        }
+
         final String str_msg = msg.getText().toString();
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
