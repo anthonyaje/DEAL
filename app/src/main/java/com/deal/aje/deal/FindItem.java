@@ -2,6 +2,7 @@ package com.deal.aje.deal;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -30,6 +31,7 @@ public class FindItem extends ActionBarActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_item);
+
         //Getting Location
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -60,8 +62,12 @@ public class FindItem extends ActionBarActivity implements LocationListener {
                 int complete = 0;
                 String hashtag = et_hashtag.getText().toString();
                 String desc = et_desc.getText().toString();
+                SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
+                String my_id = sp.getString("UserId","uid not found");
+                String gps_rage = sp.getString("GpsRange","range not found");
                 //TODO
                 // create send data to database (GPS, TIME, complete)
+
                 Intent list_intent = new Intent(v.getContext(), ListItem.class);
                 startActivity(list_intent);
             }

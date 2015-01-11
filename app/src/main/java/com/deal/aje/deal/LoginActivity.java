@@ -72,36 +72,23 @@ public class LoginActivity extends FragmentActivity {
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString("UserName",user.getName());
                     editor.commit();
-
-                    String uname = sp.getString("UserName","null");
-                    Log.d("DEAL_LOG","name from sp: "+uname);
+                    //String uname = sp.getString("UserName","null");
+                    //Log.d("DEAL_LOG","name from sp: "+uname);
 
                     //Store the new user to database
                     User u = new User();
                     u.setUsername(user.getName());
-
-                    Log.d("DEAL_LOG","Before insert Data");
                     u.insertData(u, u.getCollectionName());
-                    Log.d("DEAL_LOG","After insert Data");
-            /*
-                    u = new User();
-                    collection = DbController.getInstance().getCollection(u.getCollectionName());
 
-                    DBCursor cursor = DbController.getInstance().filterCollection(collection, u.getColumns()[1], uname);
-                    while(cursor.hasNext())
-                    {
-                        DBObject next = cursor.next();
-                        if(next!=null){
-                            u = new User(next);
-                            Log.d("DEAL_LOG","after insertData name: "+u.getUsername());
-                        }
-                    }
-
-            */
                     //Input new setting for the user
                     Setting s = new Setting();
                     s.setUser_id(u.getId());
                     s.getSettings()[0] = GPS_RANGE;
+                    //Store the userid to memory
+                    editor = sp.edit();
+                    editor.putString("UserId", u.getId());
+                    editor.putString("GpsRange,", GPS_RANGE);
+                    editor.commit();
 
                     userName.setText("Hello, " + user.getName());
                 } else {
