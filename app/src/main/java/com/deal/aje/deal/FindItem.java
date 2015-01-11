@@ -93,6 +93,8 @@ public class FindItem extends ActionBarActivity implements LocationListener {
                 r.insertData(r, r.getCollectionName());
 
                 Intent list_intent = new Intent(v.getContext(), ListItem.class);
+                list_intent.putExtra("hashtag",hashtag);
+                list_intent.putExtra("reqid",r.getId());
                 startActivity(list_intent);
             }
         });
