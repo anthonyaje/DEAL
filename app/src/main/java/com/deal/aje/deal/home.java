@@ -52,7 +52,7 @@ public class home extends ActionBarActivity {
         sp = getSharedPreferences("config", Context.MODE_PRIVATE);
         String user_name = sp.getString("UserName", "null");
         Log.d("DEAL", "username from sp: " + user_name);
-        TextView tv = (TextView) findViewById(R.id.textView);
+        //TextView tv = (TextView) findViewById(R.id.textView);
 
 
 
