@@ -72,10 +72,10 @@ public class home extends ActionBarActivity {
         btn_sell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent sell_intent = new Intent(context, SellItem.class);
-//                startActivity(sell_intent);
-                sendMessage("Sell",
-                        "APA91bF1gTTApift4O2xUQ4Dsa-bzXyDWPQCPvYOHqlcOpqIsCaayVJTDELjw67B6OpoSNa5BseKPYJALRddRkklMGCO6SFIlx8N30xfWvopzMlgYclNhvABLTd57NTmzfdUXwgD6L-78znkj3lOIwzIlUu9ZzKjAg");
+                Intent sell_intent = new Intent(context, SellItem.class);
+                startActivity(sell_intent);
+                //sendMessage("Sell",
+                //        "APA91bF1gTTApift4O2xUQ4Dsa-bzXyDWPQCPvYOHqlcOpqIsCaayVJTDELjw67B6OpoSNa5BseKPYJALRddRkklMGCO6SFIlx8N30xfWvopzMlgYclNhvABLTd57NTmzfdUXwgD6L-78znkj3lOIwzIlUu9ZzKjAg");
             }
         });
 

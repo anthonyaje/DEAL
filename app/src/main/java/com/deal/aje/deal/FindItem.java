@@ -2,6 +2,7 @@ package com.deal.aje.deal;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,18 +19,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import mongo.entity.Request;
+
 
 public class FindItem extends ActionBarActivity implements LocationListener {
     // Acquire a reference to the system Location Manager
     LocationManager locationManager;
     boolean locEnabled;
     private String provider;
-    int curLat, curLong;
+    double curLat, curLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_item);
+
         //Getting Location
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -60,8 +64,26 @@ public class FindItem extends ActionBarActivity implements LocationListener {
                 int complete = 0;
                 String hashtag = et_hashtag.getText().toString();
                 String desc = et_desc.getText().toString();
+                SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
+                String my_id = sp.getString("UserId","uid not found");
+                String gps_rage = sp.getString("GpsRange","range not found");
                 //TODO
                 // create send data to database (GPS, TIME, complete)
+                Request r = new Request();
+                r.setUser_id(my_id);
+                r.setHashtag(hashtag);
+                r.setDetail(desc);
+                r.setRange(Integer.parseInt(gps_rage));
+                r.setGpsLat(curLat);
+                r.setGpsLong(curLong);
+                r.setRequest_time(time);
+                //r.setValid_time();
+                r.setComplete(complete);
+
+                //r.insertData(r, r.getCollectionName());
+                Log.d("DEAL_LOG", "myid: "+my_id+".\nhashtag: "+hashtag+".\nDetail: "+desc+".\nGpsrange: "+gps_rage+".\nGpsLat: "+curLat+".\nLong: "+Double.toString(curLong)+
+                        ".\nCur time:"+Long.toString(time));
+
                 Intent list_intent = new Intent(v.getContext(), ListItem.class);
                 startActivity(list_intent);
             }
@@ -70,8 +92,8 @@ public class FindItem extends ActionBarActivity implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        curLat = (int) (location.getLatitude());
-        curLong = (int) (location.getLongitude());
+        curLat =  (location.getLatitude());
+        curLong =  (location.getLongitude());
     }
 
     /* Request updates at startup */
