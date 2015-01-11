@@ -75,23 +75,13 @@ public class GcmIntentService extends IntentService {
              * not interested in, or that you don't recognize.
              */
             if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)) {
-//                sendNotification("Send error: " + extras.toString());
+                Log.e(com.deal.aje.deal.Constants.TAG, "Send error: " + extras.toString());
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)) {
-//                sendNotification("Deleted messages on server: " + extras.toString());
+                Log.e(com.deal.aje.deal.Constants.TAG, "Deleted messages on server: " + extras.toString());
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // This loop represents the service doing some work.
-//                for (int i = 0; i < 5; i++) {
-//                    Log.i(TAG, "Working... " + (i + 1)
-//                            + "/5 @ " + SystemClock.elapsedRealtime());
-//                    try {
-//                        Thread.sleep(5000);
-//                    } catch (InterruptedException e) {
-//                    }
-//                }
-//                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification(extras.get("message").toString(), extras.get("title").toString());
+                sendNotification(extras);
                 // extras.get("sender") --> will get the username of the sender
                 Log.i(com.deal.aje.deal.Constants.TAG, "Received: " + extras.toString());
             }
@@ -112,15 +102,22 @@ public class GcmIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(String msg, String title) {
+    private void sendNotification(Bundle extras) {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // TODO
         // Where to show the notification when receive notification
+        Intent open = new Intent(this, ComposeMessage.class);
+        Bundle bundle = new Bundle(extras);
+        bundle.putString("sellerid", extras.get("caller_userid").toString());
+        bundle.putString("buyerid", extras.get("target_userid").toString());
+        open.putExtras(bundle);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, home.class), 0);
+                open, 0);
 
+        String msg = extras.get("message").toString();
+        String title = extras.get("title").toString();
+        // Build the notification
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)

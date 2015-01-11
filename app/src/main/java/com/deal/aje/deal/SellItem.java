@@ -133,9 +133,18 @@ public class SellItem extends ActionBarActivity {
                                 for (DBObject obj : users) {
                                     User u = new User(obj);
                                     Log.i(Constants.TAG, "Request from : " + u.getUsername());
+                                    String user_name = sp.getString("UserName", "null");
                                     // Send GCM notification
-                                    GcmController.getInstance().sendMessage(req.getHashtag()
-                                            , u.getRegistrationId(), u.getUsername(), Constants.MESSAGE_FROM_SELLER, u.getId());
+                                    GcmController.getInstance().sendMessage(
+                                            req.getHashtag(),               // Content
+                                            u.getRegistrationId(),          // Target Registration ID
+                                            u.getUsername(),                // Target Username
+                                            Constants.MESSAGE_FROM_SELLER,  // Title
+                                            u.getId(),                      // Target UserID
+                                            user_name,                      // Sender UserID
+                                            req.getId(),                    // Request ID
+                                            offer.getId()                   // Offer ID
+                                    );
                                 }
                                 total_match++;
                                 // Already match
