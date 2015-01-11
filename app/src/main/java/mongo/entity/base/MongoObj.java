@@ -21,11 +21,11 @@ public abstract class MongoObj {
     /**
      * Name of this "Table" - MongoDB Collection
      */
-    protected static String collectionName = "MongoObj";
+    protected String collectionName = "MongoObj";
     /**
      * Columns for MongoDB
      */
-    protected static String columns[];
+    protected String columns[];
 
     /**
      * Initalize id
@@ -110,14 +110,14 @@ public abstract class MongoObj {
     /**
      * @return the collectionName
      */
-    public static String getCollectionName() {
+    public String getCollectionName() {
         return collectionName;
     }
 
     /**
      * @return the columns
      */
-    public static String[] getColumns() {
+    public String[] getColumns() {
         return columns;
     }
 
@@ -126,6 +126,13 @@ public abstract class MongoObj {
      */
     public String getId() {
         return _id;
+    }
+
+    /**
+     *
+     */
+    public void setId(String _id) {
+        this._id = _id;
     }
 
 }

@@ -17,7 +17,7 @@ public class User extends MongoObj {
     public User(DBObject instance) {
         collectionName = "User";
         columns = new String[]{"id", "username", "password", "email", "picture", "registration_id"};
-        for (int i = 1; i < columns.length; i++) {
+        for (int i = 0; i < columns.length; i++) {
             this.setValue(i, instance.get(columns[i]));
         }
     }
@@ -52,7 +52,8 @@ public class User extends MongoObj {
     public final void setValue(int column, Object value) {
         switch (column) {
             case 0:
-                // Couldn't change ID
+                if (value != null)
+                    setId(value.toString());
                 break;
             case 1:
                 if (value != null)

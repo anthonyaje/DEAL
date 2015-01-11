@@ -17,7 +17,7 @@ public class Offer extends MongoObj {
     public Offer(DBObject instance) {
         collectionName = "Offer";
         columns = new String[]{"id", "user_id", "hashtag", "detail", "range", "gpsLat", "gpsLong", "request_time", "valid_time", "complete", "picture"};
-        for (int i = 1; i < columns.length; i++) {
+        for (int i = 0; i < columns.length; i++) {
             this.setValue(i, instance.get(columns[i]));
         }
     }
@@ -67,7 +67,8 @@ public class Offer extends MongoObj {
     public final void setValue(int column, Object value) {
         switch (column) {
             case 0:
-                // Couldn't change ID
+                if (value != null)
+                    setId(value.toString());
                 break;
             case 1:
                 if (value != null)
