@@ -206,7 +206,15 @@ public class GcmController {
      * @param content   Message content
      * @param target_id Destination Id
      */
-    public void sendMessage(final String content, final String target_id, final String username, final String title, final String userid) {
+    public void sendMessage(final String content,
+                            final String target_id,
+                            final String username,
+                            final String title,
+                            final String target_userid,
+                            final String caller_userid,
+                            final String request_id,
+                            final String offer_id)
+    {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
@@ -218,7 +226,10 @@ public class GcmController {
                         .addData("message", content)
                         .addData("sender", username)
                         .addData("title", title)
-                        .addData("userid", userid)
+                        .addData("target_userid", target_userid)
+                        .addData("caller_userid", caller_userid)
+                        .addData("reqid", request_id)
+                        .addData("offerid", offer_id)
                         .build();
                 try {
                     Result send = s.send(m, target, NUMBER_OF_TRIAL); // Try 5 times
