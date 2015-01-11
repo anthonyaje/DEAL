@@ -21,11 +21,11 @@ public abstract class MongoObj {
     /**
      * Name of this "Table" - MongoDB Collection
      */
-    protected String collectionName = "MongoObj";
+    protected static String collectionName = "MongoObj";
     /**
      * Columns for MongoDB
      */
-    protected String columns[];
+    protected static String columns[];
 
     /**
      * Initalize id
@@ -54,7 +54,7 @@ public abstract class MongoObj {
      * @param name Collection name
      * @return null
      */
-    public String insertData(MongoObj data, String name)
+    public static String insertData(MongoObj data, String name)
     {
         return insertData(data, name, null);
     }
@@ -66,7 +66,7 @@ public abstract class MongoObj {
      * @param image
      * @return ImageID
      */
-    public String insertData(MongoObj data, String name, byte[] image)
+    public static String insertData(MongoObj data, String name, byte[] image)
     {
         BasicDBObject saveMongoDB = data.saveMongoDB();
         String imgId = null;
@@ -86,7 +86,7 @@ public abstract class MongoObj {
         return imgId;
     }
     
-    public String insertImage(byte[] image, String instanceId)
+    public static String insertImage(byte[] image, String instanceId)
     {
         DB db = DbController.getInstance().getDB();
         String fsId = ImageController.getInstance().StoreImageFile(instanceId, image, db);
@@ -110,14 +110,14 @@ public abstract class MongoObj {
     /**
      * @return the collectionName
      */
-    public String getCollectionName() {
+    public static String getCollectionName() {
         return collectionName;
     }
 
     /**
      * @return the columns
      */
-    public String[] getColumns() {
+    public static String[] getColumns() {
         return columns;
     }
 

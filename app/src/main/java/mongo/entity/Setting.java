@@ -10,13 +10,13 @@ import com.mongodb.DBObject;
 public class Setting extends MongoObj {
 
     public Setting() {
-        this.collectionName = "Setting";
+        collectionName = "Setting";
         columns = new String[]{"id", "user_id", "default_range"};
         settings = new String[columns.length - 2];
     }
 
     public Setting(DBObject instance) {
-        this.collectionName = "Setting";
+        collectionName = "Setting";
         columns = new String[]{"id", "user_id", "default_range"};
         settings = new String[columns.length - 2];
         for (int i = 1; i < columns.length; i++) {

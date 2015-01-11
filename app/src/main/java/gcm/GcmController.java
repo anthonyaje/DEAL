@@ -206,7 +206,7 @@ public class GcmController {
      * @param content   Message content
      * @param target_id Destination Id
      */
-    public void sendMessage(final String content, final String target_id) {
+    public void sendMessage(final String content, final String target_id, final String username) {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
@@ -215,7 +215,7 @@ public class GcmController {
                 Sender s = new Sender(GcmController.API_KEY);
                 Message m = new Message.Builder()
                         .addData("message", content)
-                        .addData("sender", "Server")
+                        .addData("sender", username)
                         .build();
                 try {
                     Result send = s.send(m, target, NUMBER_OF_TRIAL); // Try 5 times
@@ -241,7 +241,7 @@ public class GcmController {
      * @param content   Message content
      * @param target_list Destination Id
      */
-    public void sendMessage(final String content, final List<String> target_list) {
+    public void sendMessage(final String content, final List<String> target_list, final String username) {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
@@ -249,7 +249,7 @@ public class GcmController {
                 Sender s = new Sender(GcmController.API_KEY);
                 Message m = new Message.Builder()
                         .addData("message", content)
-                        .addData("sender", "Server")
+                        .addData("sender", username)
                         .build();
                 try {
                     MulticastResult send = s.send(m, target_list, NUMBER_OF_TRIAL); // Try 5 times

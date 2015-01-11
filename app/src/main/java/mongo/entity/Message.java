@@ -9,12 +9,12 @@ import com.mongodb.DBObject;
  */
 public class Message extends MongoObj {
     public Message() {
-        this.collectionName = "Message";
+        collectionName = "Message";
         columns = new String[]{"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp"};
     }
 
     public Message(DBObject instance) {
-        this.collectionName = "Message";
+        collectionName = "Message";
         columns = new String[]{"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp"};
         for (int i = 1; i < columns.length; i++) {
             this.setValue(i, instance.get(columns[i]));

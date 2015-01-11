@@ -79,7 +79,6 @@ public class FindItem extends ActionBarActivity implements LocationListener {
                 SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
                 String my_id = sp.getString("UserId","uid not found");
                 String gps_rage = sp.getString("GpsRange","range not found");
-                //TODO
                 // create send data to database (GPS, TIME, complete)
                 Request r = new Request();
                 r.setUser_id(my_id);

@@ -90,6 +90,7 @@ public class GcmIntentService extends IntentService {
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
                 sendNotification("Received: " + extras.get("message"));
+                // extras.get("sender") --> will get the username of the sender
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
