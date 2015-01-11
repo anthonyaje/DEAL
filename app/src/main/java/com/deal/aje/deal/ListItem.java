@@ -41,7 +41,7 @@ public class ListItem extends ListActivity {
         String reqid = in.getExtras().getString("reqid");
         Request myreq=null;
 
-        List<DBObject> myreq_list = DbController.getInstance().filterCollection(new Offer().getCollectionName(), Request.getColumns()[0], reqid);
+        List<DBObject> myreq_list = DbController.getInstance().filterCollection(new Offer().getCollectionName(), new Request().getColumns()[0], reqid);
         if (myreq_list!=null && myreq_list.size()>0) {
             myreq = new Request(myreq_list.get(0));
         }

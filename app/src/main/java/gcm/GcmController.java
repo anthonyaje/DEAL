@@ -51,7 +51,7 @@ public class GcmController {
 
     /* Google Cloud Messaging */
 
-    AtomicInteger msgId = new AtomicInteger();
+    public static AtomicInteger GCM_ATOMIC_NOTIFICATION_ID = new AtomicInteger();
 
 
     /**

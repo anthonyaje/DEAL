@@ -31,10 +31,11 @@ import android.support.v4.app.RemoteInput;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.deal.aje.deal.R;
+import com.deal.aje.deal.*;
+import com.deal.aje.deal.Constants;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-import com.deal.aje.deal.home;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 // References
@@ -56,8 +57,6 @@ public class GcmIntentService extends IntentService {
     public GcmIntentService() {
         super("GcmIntentService");
     }
-
-    public static final String TAG = "GCM Demo";
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -92,9 +91,9 @@ public class GcmIntentService extends IntentService {
 //                }
 //                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                 // Post notification of received message.
-                sendNotification("Received: " + extras.get("message"), extras.get("title").toString(), intent);
+                sendNotification(extras.get("message").toString(), extras.get("title").toString());
                 // extras.get("sender") --> will get the username of the sender
-                Log.i(TAG, "Received: " + extras.toString());
+                Log.i(com.deal.aje.deal.Constants.TAG, "Received: " + extras.toString());
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -113,7 +112,7 @@ public class GcmIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(String msg, String title, Intent intent) {
+    private void sendNotification(String msg, String title) {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -122,36 +121,21 @@ public class GcmIntentService extends IntentService {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, home.class), 0);
 
-
-        // Unread message
-        // A pending Intent for reads
-        PendingIntent readPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
-                1,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.CarExtender.UnreadConversation.Builder unreadConvBuilder =
-                new NotificationCompat.CarExtender.UnreadConversation.Builder(title)
-                        .setLatestTimestamp(System.currentTimeMillis())
-                        .setReadPendingIntent(readPendingIntent);
-
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle(title)
-                        .setStyle(new NotificationCompat.InboxStyle().addLine(msg))
+//                        .setStyle(new NotificationCompat.InboxStyle().addLine(msg))
                         .setWhen(System.currentTimeMillis())
-//                        .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                         .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE)
                         .setAutoCancel(true)
-//                        .extend(new NotificationCompat.CarExtender()
-//                                .setUnreadConversation(unreadConvBuilder.build())
-//                                .setColor(getApplicationContext()
-//                                        .getResources().getColor(R.color.primary_text_default_material_light)))
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+//        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        mNotificationManager.notify(GcmController.GCM_ATOMIC_NOTIFICATION_ID.getAndIncrement(), mBuilder.build());
+        Log.i(Constants.TAG, "MSG_ID: "+GcmController.GCM_ATOMIC_NOTIFICATION_ID.get());
         // TODO
         // NEED TO HAVE MULTIPLE INSTANCE
     }

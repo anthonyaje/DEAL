@@ -135,7 +135,7 @@ public class SellItem extends ActionBarActivity {
                                     User u = new User(obj);
                                     Log.i(Constants.TAG, "Request from : " + u.getUsername());
                                     // Send GCM notification
-                                    GcmController.getInstance().sendMessage(Constants.MESSAGE_FROM_SELLER + ": " + req.getDetail()
+                                    GcmController.getInstance().sendMessage(req.getHashtag()
                                             , u.getRegistrationId(), u.getUsername(), Constants.MESSAGE_FROM_SELLER, u.getId());
                                 }
                                 total_match++;
