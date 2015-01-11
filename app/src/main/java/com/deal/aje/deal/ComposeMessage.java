@@ -1,16 +1,27 @@
 package com.deal.aje.deal;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mongodb.DBObject;
+
+import java.util.List;
+
+import mongo.controller.DbController;
 import mongo.entity.Message;
+import mongo.entity.Offer;
 
 
 public class ComposeMessage extends ActionBarActivity {
@@ -25,9 +36,22 @@ public class ComposeMessage extends ActionBarActivity {
         final String offer_id = in.getExtras().getString("offerid");
         final String req_id = in.getExtras().getString("reqid");
 
+        Offer offer=null;
+        List<DBObject> dbobj_offer = DbController.getInstance().filterCollection(new Offer().getCollectionName(), new Offer().getColumns()[0],offer_id);
+        if(dbobj_offer != null && dbobj_offer.size()>0){
+            offer = new Offer(dbobj_offer.get(0));
+        }else{
+            Toast.makeText(this, "Offer NULL", Toast.LENGTH_SHORT).show();
+
+        }
+
         EditText msg = (EditText) findViewById(R.id.editText_msg);
         Button btn_send = (Button) findViewById(R.id.button_send_msg);
-
+        TextView msg_history = (TextView) findViewById(R.id.textView_history);
+        msg_history.setMovementMethod(new ScrollingMovementMethod());
+        ImageView img = (ImageView) findViewById(R.id.imageView_compose_message);
+        img.setImageBitmap(BitmapFactory.decodeByteArray(offer.getPicture(), 0 , offer.getPicture().length));
+        
         final String str_msg = msg.getText().toString();
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override

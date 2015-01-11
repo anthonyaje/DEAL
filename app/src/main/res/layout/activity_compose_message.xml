@@ -12,8 +12,7 @@
         android:text="Compose Message:"
         android:textSize="20dp"
         android:id="@+id/textView6"
-        android:layout_marginBottom="26dp"
-        android:layout_above="@+id/editText_msg"
+        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -24,12 +23,11 @@
         android:ems="10"
         android:hint="Hi,\nI like your item! \nWhen and Where could we meet? \n\n Thanks"
         android:id="@+id/editText_msg"
-        android:layout_marginBottom="25dp"
-        android:layout_above="@+id/button_send_msg"
-        android:layout_alignRight="@+id/button_send_msg"
-        android:layout_alignEnd="@+id/button_send_msg"
+        android:layout_below="@+id/textView6"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/textView_history"
+        android:layout_alignEnd="@+id/textView_history" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -43,15 +41,24 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text  New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text"
+        android:layout_height="match_parent"
+        android:text=" New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text  New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n w Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text  New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n w Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text  New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text New Text New Text New Text New Text New Text New Text New Text New Text\n  New Text New Text\n New Text"
         android:id="@+id/textView_history"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:maxLines = "50"
+        android:maxLines = "20"
+        android:paddingBottom="30dp"
         android:scrollbars = "vertical"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_above="@+id/textView6" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView_compose_message"
+        android:layout_below="@+id/editText_msg"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
