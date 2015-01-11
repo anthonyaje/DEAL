@@ -91,7 +91,7 @@ public class LoginActivity extends FragmentActivity {
                         gcm = GoogleCloudMessaging.getInstance(context);
                         regid = getRegistrationId(context);
                         registerInBackground();
-                        Log.i(TAG, regid);
+                        Log.i(TAG, "Registration ID: " + regid);
                     } else {
                         Log.i(TAG, "No valid Google Play Services APK found.");
                     }
@@ -193,7 +193,7 @@ public class LoginActivity extends FragmentActivity {
     /**
      * Tag used on log messages.
      */
-    static final String TAG = "DEAL";
+    static final String TAG = "DEAL_"+LoginActivity.class;
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "1";
     String regid;
