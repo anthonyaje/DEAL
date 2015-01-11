@@ -10,12 +10,12 @@ import com.mongodb.DBObject;
 public class Request extends MongoObj {
 
     public Request() {
-        this.collectionName = "Request";
+        collectionName = "Request";
         columns = new String[]{"id", "user_id", "hashtag", "detail", "range", "gpsLat", "gpsLong", "request_time", "valid_time", "complete"};
     }
 
     public Request(DBObject instance) {
-        this.collectionName = "Request";
+        collectionName = "Request";
         columns = new String[]{"id", "user_id", "hashtag", "detail", "range", "gpsLat", "gpsLong", "request_time", "valid_time", "complete"};
         for (int i = 1; i < columns.length; i++) {
             this.setValue(i, instance.get(columns[i]));

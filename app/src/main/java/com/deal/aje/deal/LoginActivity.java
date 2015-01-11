@@ -63,8 +63,8 @@ public class LoginActivity extends FragmentActivity {
         setContentView(R.layout.activity_login);
 
         sp = getSharedPreferences("config", Context.MODE_PRIVATE);
-        if(sp.contains("UserName")){
-            Log.d("DEAL:"," not first time login");
+        if (sp.contains("UserName")) {
+            Log.d("DEAL:", " not first time login");
             Intent homeIntent = new Intent(this, home.class);
             // homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(homeIntent);
@@ -91,7 +91,7 @@ public class LoginActivity extends FragmentActivity {
                 if (user != null) {
                     //Store the username to memory
                     SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("UserName",user.getName());
+                    editor.putString("UserName", user.getName());
                     editor.commit();
                     //String uname = sp.getString("UserName","null");
                     //Log.d("DEAL_LOG","name from sp: "+uname);
@@ -99,10 +99,10 @@ public class LoginActivity extends FragmentActivity {
                     //Store the new user to database
                     User u = new User();
                     u.setUsername(user.getName());
-                    if(regid!=null)
-                    u.setRegistrationId(regid);
+                    if (regid != null)
+                        u.setRegistrationId(regid);
 
-                    Log.d("DEAL_LOG","Before insert Data");
+                    Log.d("DEAL_LOG", "Before insert Data");
                     u.insertData(u, u.getCollectionName());
 
                     //Input new setting for the user
@@ -122,9 +122,9 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
-        nextBtn.setOnClickListener(new OnClickListener(){
+        nextBtn.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 startActivity(new Intent(context, home.class));
             }
         });
@@ -184,10 +184,11 @@ public class LoginActivity extends FragmentActivity {
     /**
      * Tag used on log messages.
      */
-    static final String TAG = "DEAL_"+LoginActivity.class;
+    static final String TAG = "DEAL_" + LoginActivity.class;
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "1";
     String regid;
+
     /**
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
@@ -213,7 +214,7 @@ public class LoginActivity extends FragmentActivity {
      * {@code SharedPreferences}.
      *
      * @param context application's context.
-     * @param regId registration ID
+     * @param regId   registration ID
      */
     private void storeRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getGcmPreferences(context);
@@ -227,11 +228,11 @@ public class LoginActivity extends FragmentActivity {
 
     /**
      * Gets the current registration ID for application on GCM service, if there is one.
-     * <p>
+     * <p/>
      * If result is empty, the app needs to register.
      *
      * @return registration ID, or empty string if there is no existing
-     *         registration ID.
+     * registration ID.
      */
     private String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGcmPreferences(context);
@@ -254,7 +255,7 @@ public class LoginActivity extends FragmentActivity {
 
     /**
      * Registers the application with GCM servers asynchronously.
-     * <p>
+     * <p/>
      * Stores the registration ID and the app versionCode in the application's
      * shared preferences.
      */
@@ -263,29 +264,45 @@ public class LoginActivity extends FragmentActivity {
             @Override
             protected String doInBackground(Void... params) {
                 String msg = "";
-                try {
-                    if (gcm == null) {
-                        gcm = GoogleCloudMessaging.getInstance(context);
+                int noOfAttemptsAllowed = 5;   // Number of Retries allowed
+                int noOfAttempts = 0;          // Number of tries done
+                boolean stopFetching = false;     // Flag to denote if it has to be retried or not
+                while (!stopFetching && noOfAttempts < noOfAttemptsAllowed) {
+                    noOfAttempts++;
+                    try {
+                        if (gcm == null) {
+                            gcm = GoogleCloudMessaging.getInstance(context);
+                        }
+                        regid = gcm.register(GcmController.SENDER_ID);
+                        try {
+                            Thread.sleep(2000, 0);
+                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+                        }
+                        msg = "Device registered, registration ID=" + regid;
+
+                        // You should send the registration ID to your server over HTTP, so it
+                        // can use GCM/HTTP or CCS to send messages to your app.
+                        sendRegistrationIdToBackend();
+
+                        // For this demo: we don't need to send it because the device will send
+                        // upstream messages to a server that echo back the message using the
+                        // 'from' address in the message.
+                        if ((regid != null && !regid.isEmpty())) {
+                            // If registration ID obtained or No Of tries exceeded, stop fetching
+                            stopFetching = true;
+                        }
+
+                        // Persist the regID - no need to register again.
+                        if (regid != null && !regid.isEmpty())
+                            storeRegistrationId(context, regid);
+                    } catch (IOException ex) {
+                        msg = "Error :" + ex.getMessage();
+                        Log.e(TAG, msg);
+                        // If there is an error, don't just keep trying to register.
+                        // Require the user to click a button again, or perform
+                        // exponential back-off.
                     }
-                    regid = gcm.register(GcmController.SENDER_ID);
-                    msg = "Device registered, registration ID=" + regid;
-
-                    // You should send the registration ID to your server over HTTP, so it
-                    // can use GCM/HTTP or CCS to send messages to your app.
-                    sendRegistrationIdToBackend();
-
-                    // For this demo: we don't need to send it because the device will send
-                    // upstream messages to a server that echo back the message using the
-                    // 'from' address in the message.
-
-                    // Persist the regID - no need to register again.
-                    storeRegistrationId(context, regid);
-                } catch (IOException ex) {
-                    msg = "Error :" + ex.getMessage();
-                    Log.e(TAG, msg);
-                    // If there is an error, don't just keep trying to register.
-                    // Require the user to click a button again, or perform
-                    // exponential back-off.
                 }
                 return msg;
             }
@@ -293,7 +310,8 @@ public class LoginActivity extends FragmentActivity {
             @Override
             protected void onPostExecute(String msg) {
 //                mDisplay.append(msg + "\n");
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                Log.i(TAG, msg);
             }
         }.execute(null, null, null);
     }
@@ -321,6 +339,7 @@ public class LoginActivity extends FragmentActivity {
         return getSharedPreferences(LoginActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
+
     /**
      * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP or CCS to send
      * messages to your app. Not needed for this demo since the device sends upstream messages
