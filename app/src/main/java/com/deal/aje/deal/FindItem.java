@@ -19,13 +19,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import mongo.entity.Request;
+
 
 public class FindItem extends ActionBarActivity implements LocationListener {
     // Acquire a reference to the system Location Manager
     LocationManager locationManager;
     boolean locEnabled;
     private String provider;
-    int curLat, curLong;
+    double curLat, curLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,20 @@ public class FindItem extends ActionBarActivity implements LocationListener {
                 String gps_rage = sp.getString("GpsRange","range not found");
                 //TODO
                 // create send data to database (GPS, TIME, complete)
+                Request r = new Request();
+                r.setUser_id(my_id);
+                r.setHashtag(hashtag);
+                r.setDetail(desc);
+                r.setRange(Integer.parseInt(gps_rage));
+                r.setGpsLat(curLat);
+                r.setGpsLong(curLong);
+                r.setRequest_time(time);
+                //r.setValid_time();
+                r.setComplete(complete);
+
+                //r.insertData(r, r.getCollectionName());
+                Log.d("DEAL_LOG", "myid: "+my_id+".\nhashtag: "+hashtag+".\nDetail: "+desc+".\nGpsrange: "+gps_rage+".\nGpsLat: "+curLat+".\nLong: "+Double.toString(curLong)+
+                        ".\nCur time:"+Long.toString(time));
 
                 Intent list_intent = new Intent(v.getContext(), ListItem.class);
                 startActivity(list_intent);
@@ -76,8 +92,8 @@ public class FindItem extends ActionBarActivity implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        curLat = (int) (location.getLatitude());
-        curLong = (int) (location.getLongitude());
+        curLat =  (location.getLatitude());
+        curLong =  (location.getLongitude());
     }
 
     /* Request updates at startup */

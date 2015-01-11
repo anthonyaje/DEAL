@@ -43,16 +43,7 @@ public class SellItem extends ActionBarActivity {
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(takePictureIntent, 1);
                 }
-                /*
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 0);
 
-                Intent i = new Intent(ntent.ACTION_PICK,
-                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-                startActivityForResult(i, RESULT_LOAD_IMAGE);
-                */
             }
         });
 
@@ -82,30 +73,7 @@ public class SellItem extends ActionBarActivity {
             Toast.makeText(this, "byte array Image size: "+ img_byteArray.length ,
                     Toast.LENGTH_LONG).show();
         }
-        /*
-        if (resultCode == RESULT_OK){
-            Uri targetUri = data.getData();
-            String photo_uri = (targetUri.toString());
-            Toast.makeText(this, "Target URI: "+photo_uri ,
-                    Toast.LENGTH_LONG).show();
-            //itm_img.setImageURI(targetUri);
 
-            Bitmap bitmap;
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 2;
-            bitmap = BitmapFactory.decodeFile(targetUri.toString(),options);
-            itm_img.setImageBitmap(bitmap);
-            try {
-                bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetUri));
-                itm_img.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                Toast.makeText(this, "catch setImage " ,
-                        Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-            }
-        }
-        */
     }
 
     @Override

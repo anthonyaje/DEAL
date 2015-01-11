@@ -110,7 +110,7 @@ public class LoginActivity extends FragmentActivity {
                     //Store the userid to memory
                     editor = sp.edit();
                     editor.putString("UserId", u.getId());
-                    editor.putString("GpsRange,", GPS_RANGE);
+                    editor.putString("GpsRange", GPS_RANGE);
                     editor.commit();
 
                     userName.setText("Hello, " + user.getName());
