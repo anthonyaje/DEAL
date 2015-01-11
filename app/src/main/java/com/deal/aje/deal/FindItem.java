@@ -25,6 +25,17 @@ import mongo.entity.Request;
 public class FindItem extends ActionBarActivity implements LocationListener {
     // Acquire a reference to the system Location Manager
     LocationManager locationManager;
+    LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            // Called when a new location is found by the network location provider.
+            curLat =  (location.getLatitude());
+            curLong =  (location.getLongitude());
+        }
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+        public void onProviderEnabled(String provider) {}
+        public void onProviderDisabled(String provider) {}
+    };
+
     boolean locEnabled;
     private String provider;
     double curLat, curLong;
@@ -41,8 +52,8 @@ public class FindItem extends ActionBarActivity implements LocationListener {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(intent);
         }
-        Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, false);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        provider = LocationManager.NETWORK_PROVIDER;
         Location location = locationManager.getLastKnownLocation(provider);
         // Initialize the location fields
         if (location != null) {
@@ -53,6 +64,7 @@ public class FindItem extends ActionBarActivity implements LocationListener {
         } else {
             Log.d("DEAL_LOG", "Location Unavailable");
         }
+
 
         final EditText et_hashtag = (EditText) findViewById(R.id.editText_hashtag);
         final EditText et_desc = (EditText) findViewById(R.id.editText_desc);
@@ -79,10 +91,7 @@ public class FindItem extends ActionBarActivity implements LocationListener {
                 r.setRequest_time(time);
                 //r.setValid_time();
                 r.setComplete(complete);
-
-                //r.insertData(r, r.getCollectionName());
-                Log.d("DEAL_LOG", "myid: "+my_id+".\nhashtag: "+hashtag+".\nDetail: "+desc+".\nGpsrange: "+gps_rage+".\nGpsLat: "+curLat+".\nLong: "+Double.toString(curLong)+
-                        ".\nCur time:"+Long.toString(time));
+                r.insertData(r, r.getCollectionName());
 
                 Intent list_intent = new Intent(v.getContext(), ListItem.class);
                 startActivity(list_intent);
