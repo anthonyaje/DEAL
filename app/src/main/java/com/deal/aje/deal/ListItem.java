@@ -12,11 +12,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.mongodb.DBObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import mongo.controller.DbController;
+import mongo.entity.Offer;
 
 
 public class ListItem extends ListActivity {
@@ -30,6 +33,12 @@ public class ListItem extends ListActivity {
         String[] desc_arr = new String[]{"Desc item1", "Desc item2", "Desc item3"};
         List<byte[]> img_list = new ArrayList<>();
 
+
+        List<DBObject> list = DbController.getInstance().findAll(new Offer().getCollectionName());
+        for(DBObject it: list){
+            Offer o = new Offer(it);
+            
+        }
 
         SimpleArrayAdapter adapter = new SimpleArrayAdapter(this, item_arr, desc_arr, img_list);
         setListAdapter(adapter);
