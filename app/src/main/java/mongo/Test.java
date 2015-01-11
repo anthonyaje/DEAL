@@ -8,6 +8,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,11 +83,9 @@ public class Test {
     private static void testReadUser(String column, String value, String outputImage)
     {
         User u = new User();
-        DBCursor filterCollection = DbController.getInstance().filterCollection(u.getCollectionName(), column, value);
-        Iterator<DBObject> iterator = filterCollection.iterator();
-        while(iterator.hasNext())
+        List<DBObject> list = DbController.getInstance().filterCollection(u.getCollectionName(), column, value);
+        for(DBObject next: list)
         {
-            DBObject next = iterator.next();
             u = new User(next);
             System.out.println(next);
             System.out.println("Test imageId: "+imageId);

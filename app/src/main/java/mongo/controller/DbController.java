@@ -1,5 +1,7 @@
 package mongo.controller;
 
+import android.util.Log;
+
 import mongo.controller.async.TaskCount;
 import mongo.controller.async.TaskDelete;
 import mongo.controller.async.TaskFilterCollection;
@@ -8,6 +10,7 @@ import mongo.controller.async.TaskGetCollection;
 import mongo.controller.async.TaskInsert;
 import mongo.controller.async.TaskShowValue;
 import mongo.exception.MongoException;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -28,6 +31,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class DbController {
 
+    private static String TAG = "DB_Controller";
     public static String IP = "140.113.216.123";
     public static String database = "cloud";
     private Mongo mongoClient;
@@ -63,8 +67,8 @@ public class DbController {
         try {
             mongoClient = new Mongo(IP);
             return mongoClient;
-        } catch (UnknownHostException ex) {
-            System.err.println("Unknown host exception : Open()\n" + ex.getMessage());
+        } catch (UnknownHostException e) {
+            Log.e(TAG, "Unknown host exception : Open()\n" + e.getMessage());
             return null;
         }
     }
@@ -77,108 +81,108 @@ public class DbController {
 
     /**
      * Get all data from table / collection (Async)
-     * @param table Table name or Collection name
+     * @param tablename Table name or Collection name
      * @return collection (table)
      * @return collection (table)
      */
-    public DBCollection getCollection(String table) {
+    public DBCollection getCollection(String tablename) {
         TaskGetCollection task = new TaskGetCollection();
-        task.execute(table);
+        task.execute(tablename);
         try {
             DBCollection collection = task.get();
             return collection;
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return null;
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return null;
         }
     }
     
     /**
      * Return a query of data
-     * @param coll Collection instance
+     * @param tablename Collection instance
      * @param column Column to be filtered
      * @param value Value to be filtered
      * @return 
      */
-    public DBCursor filterCollection(String coll, String column, String value) {
+    public List<DBObject> filterCollection(String tablename, String column, String value) {
         TaskFilterCollection task = new TaskFilterCollection();
-        task.execute(coll, column, value);
+        task.execute(tablename, column, value);
         try {
-            DBCursor find = task.get();
+            List<DBObject> find = task.get();
             return find;
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return null;
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return null;
         }
     }
 
     /**
      * Return all data
-     * @param coll Collection instance
+     * @param tablename Collection instance
      * @return
      */
-    public DBCursor findAll(String coll) {
+    public List<DBObject> findAll(String tablename) {
         TaskFilterCollection task = new TaskFilterCollection();
-        task.execute(coll);
+        task.execute(tablename);
         try {
-            DBCursor find = task.get();
+            List<DBObject> find = task.get();
             return find;
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return null;
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return null;
         }
     }
 
     /**
      * Return 1 data
-     * @param table Table name
+     * @param tablename Table name
      * @return
      */
-    public DBObject findOne(String table) {
+    public DBObject findOne(String tablename) {
         TaskFindOne task = new TaskFindOne();
-        task.execute(table);
+        task.execute(tablename);
         try {
             DBObject find = task.get();
             return find;
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return null;
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return null;
         }
     }
     
-    /**
-     * Get all value, separated by delimiter
-     * @param find Db cursor (A query)
-     * @param columnNames Names of each column
-     * @param delimiter delimiter to split each column's value
-     * @return 
-     */
-    public List<String> showAllValue(DBCursor find, String[] columnNames, char delimiter) {
-        TaskShowValue task = new TaskShowValue();
-        task.execute(find, columnNames, delimiter);
-        try {
-            List<String> result = task.get();
-            return result;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    /**
+//     * Get all value, separated by delimiter
+//     * @param find Db cursor (A query)
+//     * @param columnNames Names of each column
+//     * @param delimiter delimiter to split each column's value
+//     * @return
+//     */
+//    public List<String> showAllValue(DBCursor find, String[] columnNames, char delimiter) {
+//        TaskShowValue task = new TaskShowValue();
+//        task.execute(find, columnNames, delimiter);
+//        try {
+//            List<String> result = task.get();
+//            return result;
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//            return null;
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
     
     /**
      * Delete a table / collection, please use it with care
@@ -203,32 +207,31 @@ public class DbController {
             Long result = task.get();
             return result;
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return -1;
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return -1;
         }
     }
     
     /**
      * Insert a data to a table / collection
-     * @param coll
+     * @param tablename
      * @param doc
      * @return
-     * @throws MongoException 
      */
-    public WriteResult insertData(String coll, BasicDBObject doc) throws MongoException {
+    public WriteResult insertData(String tablename, BasicDBObject doc) throws MongoException {
         TaskInsert task = new TaskInsert();
-        task.execute(coll, doc);
+        task.execute(tablename, doc);
         try {
             WriteResult result = task.get();
             return result;
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return null;
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
             return null;
         }
     }

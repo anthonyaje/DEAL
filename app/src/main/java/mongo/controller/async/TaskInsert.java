@@ -10,7 +10,6 @@ import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 
 import mongo.controller.DbController;
-import mongo.exception.MongoException;
 
 /**
  * Created by Lalala on 1/6/15.
