@@ -3,6 +3,7 @@ package com.deal.aje.deal;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,12 +41,16 @@ public class SimpleArrayAdapter extends ArrayAdapter<String> {
         TextView textView2 = (TextView) rowView.findViewById(R.id.secondLine);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
 
-        textView1.setText(item_arr[position]);
-        textView2.setText(desc_arr[position]);
-        //Bitmap bm = BitmapFactory.decodeByteArray(item_pic, 0,item_pic[position].length);
-        //imageView.setImageBitmap(bm);
-
-
+        if(position < item_arr.length) {
+            textView1.setText(item_arr[position]);
+            textView2.setText(desc_arr[position]);
+            Log.d(Constants.TAG, "position:" + position + "itemsize:" + item_arr.length +" Pic size"+item_pic.size()+" desc size: "+desc_arr.length);
+            if (position<item_pic.size() && item_pic.get(position) != null) {
+                int x = item_pic.get(position).length;
+                Bitmap bm = BitmapFactory.decodeByteArray(item_pic.get(position), 0, x);
+                imageView.setImageBitmap(bm);
+            }
+        }
         return rowView;
     }
 
