@@ -23,6 +23,7 @@ import com.mongodb.DBObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import gcm.GcmController;
 import mongo.controller.DbController;
 import mongo.entity.Message;
 import mongo.entity.Offer;
@@ -110,14 +111,14 @@ public class ComposeMessage extends ActionBarActivity {
                 // Show buyer message
                 msg_history.append(buyer.getUsername());
                 msg_history.append(" : ");
-                msg_history.append(" [BUYER] ");
+//                msg_history.append(" [BUYER] ");
                 msg_history.append(m.getMessage());
                 msg_history.append("\n");
             } else {
                 // Show seller message
                 msg_history.append(seller.getUsername());
                 msg_history.append(" : ");
-                msg_history.append(" [SELLER] ");
+//                msg_history.append(" [SELLER] ");
                 msg_history.append(m.getMessage());
                 msg_history.append("\n");
             }
@@ -129,16 +130,17 @@ public class ComposeMessage extends ActionBarActivity {
                 if (msg.getText().toString().isEmpty()) {
                     Toast.makeText(getBaseContext(), "Message cant be empty",
                             Toast.LENGTH_SHORT).show();
-                } else {
-                    //TODO
-                    // send mesage to DB and back to home
+                }
+                else
+                {
                     SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
                     String userid = sp.getString("UserId", "null");
-                    Message m = new Message();
                     String buyer_id = extras.getString("buyerid");
                     String seller_id = extras.getString("sellerid");
                     String offer_id = extras.getString("offerid");
                     String req_id = extras.getString("reqid");
+
+                    Message m = new Message();
                     m.setUser_1(buyer_id);
                     m.setUser_2(seller_id);
                     m.setWho_send(userid);
@@ -146,14 +148,35 @@ public class ComposeMessage extends ActionBarActivity {
                     m.setRequest_id(req_id);
                     m.setTimestamp(System.currentTimeMillis());
                     m.setMessage(msg.getText().toString());
-                    Log.d(Constants.TAG, "Message: " + m.saveMongoDB().toString());
+//                    Log.d(Constants.TAG, ComposeMessage.class + " Message: " + m.saveMongoDB().toString());
                     m.insertData(m, m.getCollectionName());
+
                     msg.setText("");
-                    Intent msg_intent = new Intent(getApplicationContext(), Messaging.class);
-                    startActivity(msg_intent);
+                    // Send GCM Notification to other party
+                    String other_party = userid.equals(buyer_id) ? seller_id : buyer_id;
+                    String reg_id = null;
+                    String username = null;
+                    Log.d(Constants.TAG, ComposeMessage.class + " Buyer      : "+buyer_id);
+                    Log.d(Constants.TAG, ComposeMessage.class + " Seller     : "+seller_id);
+                    Log.d(Constants.TAG, ComposeMessage.class + " Other party: "+other_party);
+                    List<DBObject> users = DbController.getInstance().filterCollection(new User().getCollectionName(),
+                            "id",   // Check on id
+                            other_party
+                    );
+                    if(users!=null && !users.isEmpty())
+                    {
+                        User u = new User(users.get(0));
+                        reg_id = u.getRegistrationId();
+                        username = u.getUsername();
+                    }
+                    GcmController.getInstance().sendMessage(m.getMessage(), reg_id, username, Constants.MESSAGE_NEW_MAIL, buyer_id, seller_id, req_id, offer_id);
+                    // Finish the page
+                    Toast.makeText(getBaseContext(), "Message sent",
+                            Toast.LENGTH_SHORT).show();
+                    finish();
+//                    Intent msg_intent = new Intent(getApplicationContext(), Messaging.class);
+//                    startActivity(msg_intent);
                 }
-                // TODO
-                // Back to main page
             }
         });
 

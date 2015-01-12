@@ -81,11 +81,11 @@ public class GcmIntentService extends IntentService {
                 Log.e(com.deal.aje.deal.Constants.TAG, "Deleted messages on server: " + extras.toString());
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                Log.i(com.deal.aje.deal.Constants.TAG, GcmIntentService.class + " (Before send Notification) Extras: " + extras.toString());
+//                Log.i(com.deal.aje.deal.Constants.TAG, GcmIntentService.class + " (Before send Notification) Extras: " + extras.toString());
                 // Post notification of received message.
                 sendNotification(extras);
                 // extras.get("sender") --> will get the username of the sender
-                Log.i(com.deal.aje.deal.Constants.TAG, GcmIntentService.class + " (After send Notification) Extras: " + extras.toString());
+//                Log.i(com.deal.aje.deal.Constants.TAG, GcmIntentService.class + " (After send Notification) Extras: " + extras.toString());
             }
         }
         Log.i(com.deal.aje.deal.Constants.TAG, GcmIntentService.class + " FINAL Extras: " + intent.getExtras().toString());
@@ -113,15 +113,15 @@ public class GcmIntentService extends IntentService {
 
         // Where to show the notification when receive notification
         Intent open = new Intent(getApplicationContext(), ComposeMessage.class);
-        Log.d(Constants.TAG, GcmIntentService.class + " Seller id: "+extras.get("caller_userid").toString());
-        Log.d(Constants.TAG, GcmIntentService.class + " Buyer id : "+extras.get("target_userid").toString());
-        Log.d(Constants.TAG, GcmIntentService.class + " Offer id : "+extras.get("offerid").toString());
-        Log.d(Constants.TAG, GcmIntentService.class + " Requestid: "+extras.get("reqid").toString());
-        open.putExtra("sellerid", extras.get("caller_userid").toString());
-        open.putExtra("buyerid", extras.get("target_userid").toString());
+        Log.d(Constants.TAG, GcmIntentService.class + " Seller id: " + extras.get("sellerid").toString());
+        Log.d(Constants.TAG, GcmIntentService.class + " Buyer id : " + extras.get("buyerid").toString());
+        Log.d(Constants.TAG, GcmIntentService.class + " Offer id : " + extras.get("offerid").toString());
+        Log.d(Constants.TAG, GcmIntentService.class + " Requestid: " + extras.get("reqid").toString());
+        open.putExtra("sellerid", extras.get("sellerid").toString());
+        open.putExtra("buyerid", extras.get("buyerid").toString());
         open.putExtra("offerid", extras.get("offerid").toString());
         open.putExtra("reqid", extras.get("reqid").toString());
-        Log.d(Constants.TAG, GcmIntentService.class + " Extras: "+extras.toString());
+        Log.d(Constants.TAG, GcmIntentService.class + " Extras: " + extras.toString());
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 open, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -138,9 +138,15 @@ public class GcmIntentService extends IntentService {
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
+        // One instance (old)
 //        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         // Handle multiple instance of notifications with Atomic Integer
-        mNotificationManager.notify(GcmController.GCM_ATOMIC_NOTIFICATION_ID.getAndIncrement(), mBuilder.build());
-        Log.i(Constants.TAG, GcmIntentService.class+" MSG_ID: "+GcmController.GCM_ATOMIC_NOTIFICATION_ID.get());
+        if(title.equals(Constants.MESSAGE_FROM_SELLER)) {
+            mNotificationManager.notify(GcmController.GCM_ATOMIC_NOTIFICATION_ID.getAndIncrement(), mBuilder.build());
+        }
+        else if(title.equals(Constants.MESSAGE_NEW_MAIL)) {
+            mNotificationManager.notify(Constants.MESSAGE_NOTIFICATION_ID, mBuilder.build());
+        }
+        Log.i(Constants.TAG, GcmIntentService.class + " MSG_ID: " + GcmController.GCM_ATOMIC_NOTIFICATION_ID.get());
     }
 }

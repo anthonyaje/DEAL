@@ -144,8 +144,8 @@ public class SellItem extends ActionBarActivity {
                                             u.getRegistrationId(),          // Target Registration ID
                                             u.getUsername(),                // Target Username
                                             Constants.MESSAGE_FROM_SELLER,  // Title
-                                            u.getId(),                      // Target UserID
-                                            userid,                         // Sender UserID
+                                            u.getId(),                      // Buyer
+                                            userid,                         // Seller
                                             req.getId(),                    // Request ID
                                             offer.getId()                   // Offer ID
                                     );

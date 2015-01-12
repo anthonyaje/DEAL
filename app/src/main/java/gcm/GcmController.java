@@ -210,8 +210,8 @@ public class GcmController {
                             final String target_id,
                             final String username,
                             final String title,
-                            final String target_userid,
-                            final String caller_userid,
+                            final String buyerid,
+                            final String sellerid,
                             final String request_id,
                             final String offer_id)
     {
@@ -226,10 +226,10 @@ public class GcmController {
                 Sender s = new Sender(GcmController.API_KEY);
                 Message m = new Message.Builder()
                         .addData("message", content)
-//                        .addData("sender", username)
+                        .addData("sender", username)
                         .addData("title", title)
-                        .addData("target_userid", target_userid)
-                        .addData("caller_userid", caller_userid)
+                        .addData("buyerid", buyerid)
+                        .addData("sellerid", sellerid)
                         .addData("reqid", request_id)
                         .addData("offerid", offer_id)
                         .build();
