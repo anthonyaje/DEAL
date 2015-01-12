@@ -10,12 +10,12 @@ import com.mongodb.DBObject;
 public class Message extends MongoObj {
     public Message() {
         collectionName = "Message";
-        columns = new String[]{"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp"};
+        columns = new String[]{"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp", "who_send"};
     }
 
     public Message(DBObject instance) {
         collectionName = "Message";
-        columns = new String[]{"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp"};
+        columns = new String[]{"id", "user_1", "user_2", "timestamp", "message", "offer_id", "request_id", "read_timestamp", "who_send"};
         for (int i = 0; i < columns.length; i++) {
             this.setValue(i, instance.get(columns[i]));
         }
@@ -28,6 +28,7 @@ public class Message extends MongoObj {
     private String offer_id;
     private String request_id;
     private long read_timestamp;
+    private String who_send;
 
     @Override
     public Object getValue(int id) {
@@ -48,6 +49,8 @@ public class Message extends MongoObj {
                 return getRequest_id();
             case 7:
                 return getRead_timestamp();
+            case 8:
+                return getWho_send();
             default:
                 return null;
         }
@@ -87,6 +90,10 @@ public class Message extends MongoObj {
             case 7:
                 if (value != null)
                     setRead_timestamp(Long.parseLong(value.toString()));
+                break;
+            case 8:
+                if (value != null)
+                    setWho_send(value.toString());
                 break;
         }
     }
@@ -169,5 +176,13 @@ public class Message extends MongoObj {
 
     public void setRead_timestamp(long read_timestamp) {
         this.read_timestamp = read_timestamp;
+    }
+
+    public String getWho_send() {
+        return who_send;
+    }
+
+    public void setWho_send(String who_send) {
+        this.who_send = who_send;
     }
 }

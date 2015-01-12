@@ -1,6 +1,8 @@
 package com.deal.aje.deal;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.support.v7.app.ActionBarActivity;
@@ -71,11 +73,11 @@ public class ComposeMessage extends ActionBarActivity {
             Log.e(Constants.TAG, ComposeMessage.class + " Buyer is NULL: " + buyer_id);
         }
 
-        try {
-            Thread.sleep(2000, 0);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(2000, 0);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         List<DBObject> seller_list = DbController.getInstance().filterCollection(new User().getCollectionName(), new User().getColumns()[0], seller_id);
         if (seller_list != null && seller_list.size() > 0)
@@ -86,37 +88,26 @@ public class ComposeMessage extends ActionBarActivity {
             Log.e(Constants.TAG, ComposeMessage.class + " Seller is NULL: " + seller_id);
         }
 
-        List<Message> buyerMessage = getBuyerMessageInTimestampOrder(buyer_id, req_id, offer_id);
-        List<Message> sellerMessage = getSellerMessageInTimestampOrder(seller_id, req_id, offer_id);
-        for (Message m : buyerMessage) {
-            Log.d(Constants.TAG, ComposeMessage.class + "BBBB: " + m.getMessage() + " :: " + m.getTimestamp());
-        }
-
-        for (Message m : sellerMessage) {
-            Log.d(Constants.TAG, ComposeMessage.class + "SSSS: " + m.getMessage() + " :: " + m.getTimestamp());
-        }
+        List<Message> message = getMessageInTimestampOrder(buyer_id, seller_id, req_id, offer_id);
         // Show message in timestamp order
         msg_history.setText("");
-        Log.d(Constants.TAG, ComposeMessage.class + "Buyer Message: " + buyerMessage.size());
-        Log.d(Constants.TAG, ComposeMessage.class + "Seller Message: " + sellerMessage.size());
-        int i = 0, j = 0;
-        while (i < buyerMessage.size() && j < sellerMessage.size()) {
-            if (buyerMessage.get(i).getTimestamp() < sellerMessage.get(j).getTimestamp()) {
+
+        for(Message m: message)
+        {
+            if (m.getUser_1().equals(m.getWho_send())) {
                 // Show buyer message
                 msg_history.append(buyer.getUsername());
                 msg_history.append(" : ");
                 msg_history.append(" [BUYER] ");
-                msg_history.append(buyerMessage.get(i).getMessage());
+                msg_history.append(m.getMessage());
                 msg_history.append("\n");
-                i++;
             } else {
                 // Show seller message
                 msg_history.append(seller.getUsername());
                 msg_history.append(" : ");
                 msg_history.append(" [SELLER] ");
-                msg_history.append(sellerMessage.get(j).getMessage());
+                msg_history.append(m.getMessage());
                 msg_history.append("\n");
-                j++;
             }
         }
 
@@ -129,9 +120,12 @@ public class ComposeMessage extends ActionBarActivity {
                 } else {
                     //TODO
                     // send mesage to DB and back to home
+                    SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
+                    String userid = sp.getString("UserId", "null");
                     Message m = new Message();
                     m.setUser_1(buyer_id);
                     m.setUser_2(seller_id);
+                    m.setWho_send(userid);
                     m.setOffer_id(offer_id);
                     m.setRequest_id(req_id);
                     m.setTimestamp(System.currentTimeMillis());
@@ -172,23 +166,12 @@ public class ComposeMessage extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private List<Message> getBuyerMessageInTimestampOrder(String userid, String request_id, String offer_id) {
+    private List<Message> getMessageInTimestampOrder(String buyer, String seller, String request_id, String offer_id) {
         List<Message> list = new ArrayList();
-        final List<DBObject> dbObjects = DbController.getInstance().filterCollection(new Message().getCollectionName(), new Message().getColumns()[1], userid);
+        final List<DBObject> dbObjects = DbController.getInstance().filterCollection(new Message().getCollectionName(), new Message().getColumns()[1], buyer);
         for (DBObject o : dbObjects) {
             Message m = new Message(o);
-            if (m.getRequest_id().equals(request_id) && m.getOffer_id().equals(offer_id))
-                list.add(m);
-        }
-        return list;
-    }
-
-    private List<Message> getSellerMessageInTimestampOrder(String userid, String request_id, String offer_id) {
-        List<Message> list = new ArrayList();
-        final List<DBObject> dbObjects = DbController.getInstance().filterCollection(new Message().getCollectionName(), new Message().getColumns()[2], userid);
-        for (DBObject o : dbObjects) {
-            Message m = new Message(o);
-            if (m.getRequest_id().equals(request_id) && m.getOffer_id().equals(offer_id))
+            if (m.getUser_2().equals(seller) && m.getRequest_id().equals(request_id) && m.getOffer_id().equals(offer_id))
                 list.add(m);
         }
         return list;

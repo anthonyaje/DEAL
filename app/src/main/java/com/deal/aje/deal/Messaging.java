@@ -45,7 +45,7 @@ public class Messaging extends ListActivity {
         //Intent inte = getIntent();
         //inte.getExtras("")
         SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
-        my_id = sp.getString("UserId","null");
+        my_id = sp.getString("UserId", "null");
 
         //List<String> sell_msg_name = new ArrayList<>();     //seller=me to buyer
         //List<String> sell_msg_body = new ArrayList<>();
@@ -64,39 +64,43 @@ public class Messaging extends ListActivity {
 
         Message m = new Message();
         List<DBObject> list = DbController.getInstance().filterCollection(m.getCollectionName(), m.getColumns()[1], my_id);
-        for(DBObject it:list){
+        if (list != null)
+            Log.d(Constants.TAG, "List size: " + list.size());
+        for (DBObject it : list) {
             m = new Message(it);
             bf_uid.add(m.getUser_2());
             bf_oid.add(m.getOffer_id());
             bf_rid.add(m.getRequest_id());
 
+            Log.d(Constants.TAG, "User2: "+m.getUser_2());
             List<DBObject> list_namadia = DbController.getInstance().filterCollection(new User().getCollectionName(), new User().getColumns()[0], m.getUser_2());
-            if(list_namadia == null){
+            if (list_namadia != null)
+                Log.d(Constants.TAG, "list_namadia size: " + list_namadia.size());
+            if (list_namadia == null) {
                 Toast.makeText(this, "Query 1 not found on his name",
                         Toast.LENGTH_LONG).show();
                 break;
             }
-
             User he = new User(list_namadia.get(0));
-            msg_name.add("Buy from: "+he.getUsername()+" Time:"+new Date(m.getTimestamp()).toString());
+            msg_name.add("Buy from: " + he.getUsername() + " Time:" + new Date(m.getTimestamp()).toString());
             msg_body.add(m.getMessage());
         }
 
         List<DBObject> llist = DbController.getInstance().filterCollection(m.getCollectionName(), m.getColumns()[2], my_id);
-        for(DBObject it:llist){
+        for (DBObject it : llist) {
             m = new Message(it);
             st_uid.add(m.getUser_1());
             st_oid.add(m.getOffer_id());
             st_rid.add(m.getRequest_id());
 
             List<DBObject> list_namadia = DbController.getInstance().filterCollection(new User().getCollectionName(), new User().getColumns()[0], m.getUser_1());
-            if(list_namadia == null){
+            if (list_namadia == null) {
                 Toast.makeText(this, "Query 2 not found on his name",
                         Toast.LENGTH_LONG).show();
                 break;
             }
             User he = new User(list_namadia.get(0));
-            msg_name.add("Sell to: "+he.getUsername()+" Time:"+new Date(m.getTimestamp()).toString());
+            msg_name.add("Sell to: " + he.getUsername() + " Time:" + new Date(m.getTimestamp()).toString());
             msg_body.add(m.getMessage());
         }
 
@@ -109,9 +113,9 @@ public class Messaging extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, final int position, long id) {
         String item = (String) getListAdapter().getItem(position);
-        final int i = l.getFirstVisiblePosition()+position;
-        Log.d(Constants.TAG, "index real: "+i +"position: "+position);
-        
+        final int i = l.getFirstVisiblePosition() + position;
+        Log.d(Constants.TAG, "index real: " + i + "position: " + position);
+
         new AlertDialog.Builder(this)
                 .setTitle("Send Message")
                 .setMessage("Send Message to seller?")
@@ -130,6 +134,7 @@ public class Messaging extends ListActivity {
                             msg_intent.putExtra("sellerid", bf_uid.get(position));
                             msg_intent.putExtra("offerid", bf_oid.get(position));
                             msg_intent.putExtra("reqid", bf_rid.get(position));
+
                         }else if(msg_name.get(position).contains("Sell to")) {
                             msg_intent.putExtra("buyerid", st_uid.get(position-j));
                             msg_intent.putExtra("sellerid",my_id);
@@ -154,7 +159,7 @@ public class Messaging extends ListActivity {
                 .show();
     }
 
-        @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_messaging, menu);
