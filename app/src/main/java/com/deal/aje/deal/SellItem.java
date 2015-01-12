@@ -159,8 +159,9 @@ public class SellItem extends ActionBarActivity {
                     }
                 }
                 Log.i(Constants.TAG, "Total Match : " + total_match);
-                // TODO
+
                 // Back to main page
+                finish();
             }
         });
     }
