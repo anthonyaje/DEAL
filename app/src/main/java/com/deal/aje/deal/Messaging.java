@@ -76,6 +76,7 @@ public class Messaging extends ListActivity {
                         Toast.LENGTH_LONG).show();
                 break;
             }
+
             User he = new User(list_namadia.get(0));
             msg_name.add("Buy from: "+he.getUsername()+" Time:"+new Date(m.getTimestamp()).toString());
             msg_body.add(m.getMessage());
@@ -119,19 +120,27 @@ public class Messaging extends ListActivity {
                         //FIXME
                         // position
                         Intent msg_intent = new Intent(getApplicationContext(), ComposeMessage.class);
-                        msg_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        if(msg_name.contains("Buy from")) {
+                        int j = bf_rid.size();
+                        Log.d(Constants.TAG, "bf_uid: size "+bf_rid.size());
+                        Log.d(Constants.TAG, "msg_name size: "+msg_name.size());
+                        Log.d(Constants.TAG, "msg_name 0: "+msg_name.get(0));
+
+                        if(msg_name.get(position).contains("Buy from") ) {
                             msg_intent.putExtra("buyerid", my_id);
                             msg_intent.putExtra("sellerid", bf_uid.get(position));
                             msg_intent.putExtra("offerid", bf_oid.get(position));
                             msg_intent.putExtra("reqid", bf_rid.get(position));
-                        }else{
-                            msg_intent.putExtra("buyerid", st_uid.get(position));
+                        }else if(msg_name.get(position).contains("Sell to")) {
+                            msg_intent.putExtra("buyerid", st_uid.get(position-j));
                             msg_intent.putExtra("sellerid",my_id);
-                            msg_intent.putExtra("offerid", st_oid.get(position));
-                            msg_intent.putExtra("reqid", st_rid.get(position));
+                            msg_intent.putExtra("offerid", st_oid.get(position-j));
+                            msg_intent.putExtra("reqid", st_rid.get(position-j));
+
+                        }else{
+                            Log.d(Constants.TAG, "Msgname error");
 
                         }
+                        msg_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(msg_intent);
 
                     }
