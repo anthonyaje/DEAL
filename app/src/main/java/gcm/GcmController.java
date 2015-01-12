@@ -226,13 +226,14 @@ public class GcmController {
                 Sender s = new Sender(GcmController.API_KEY);
                 Message m = new Message.Builder()
                         .addData("message", content)
-                        .addData("sender", username)
+//                        .addData("sender", username)
                         .addData("title", title)
                         .addData("target_userid", target_userid)
                         .addData("caller_userid", caller_userid)
                         .addData("reqid", request_id)
                         .addData("offerid", offer_id)
                         .build();
+                Log.d(TAG, "Message: "+m.toString());
                 try {
                     Result send = s.send(m, target, NUMBER_OF_TRIAL); // Try 5 times
                     Log.i(TAG, "Result: "+send.toString());

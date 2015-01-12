@@ -65,7 +65,8 @@ public class GcmIntentService extends IntentService {
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
-        showToast("message type: " + messageType);
+//        showToast("message type: " + messageType);
+        Log.d(com.deal.aje.deal.Constants.TAG, GcmIntentService.class + " Message Type: " + messageType);
 
         if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
             showToast(extras.toString());
@@ -80,12 +81,14 @@ public class GcmIntentService extends IntentService {
                 Log.e(com.deal.aje.deal.Constants.TAG, "Deleted messages on server: " + extras.toString());
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+                Log.i(com.deal.aje.deal.Constants.TAG, GcmIntentService.class + " (Before send Notification) Extras: " + extras.toString());
                 // Post notification of received message.
                 sendNotification(extras);
                 // extras.get("sender") --> will get the username of the sender
-                Log.i(com.deal.aje.deal.Constants.TAG, "Received: " + extras.toString());
+                Log.i(com.deal.aje.deal.Constants.TAG, GcmIntentService.class + " (After send Notification) Extras: " + extras.toString());
             }
         }
+        Log.i(com.deal.aje.deal.Constants.TAG, GcmIntentService.class + " FINAL Extras: " + intent.getExtras().toString());
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
@@ -105,20 +108,23 @@ public class GcmIntentService extends IntentService {
     private void sendNotification(Bundle extras) {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Where to show the notification when receive notification
-        Intent open = new Intent(this, ComposeMessage.class);
-        Bundle bundle = new Bundle(extras);
-        Log.d(Constants.TAG, "Seller id: "+extras.get("caller_userid").toString());
-        Log.d(Constants.TAG, "Buyer id: "+extras.get("target_userid").toString());
-        bundle.putString("sellerid", extras.get("caller_userid").toString());
-        bundle.putString("buyerid", extras.get("target_userid").toString());
-        open.putExtras(bundle);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                open, 0);
-
         String msg = extras.get("message").toString();
         String title = extras.get("title").toString();
+
+        // Where to show the notification when receive notification
+        Intent open = new Intent(getApplicationContext(), ComposeMessage.class);
+        Log.d(Constants.TAG, GcmIntentService.class + " Seller id: "+extras.get("caller_userid").toString());
+        Log.d(Constants.TAG, GcmIntentService.class + " Buyer id : "+extras.get("target_userid").toString());
+        Log.d(Constants.TAG, GcmIntentService.class + " Offer id : "+extras.get("offerid").toString());
+        Log.d(Constants.TAG, GcmIntentService.class + " Requestid: "+extras.get("reqid").toString());
+        open.putExtra("sellerid", extras.get("caller_userid").toString());
+        open.putExtra("buyerid", extras.get("target_userid").toString());
+        open.putExtra("offerid", extras.get("offerid").toString());
+        open.putExtra("reqid", extras.get("reqid").toString());
+        Log.d(Constants.TAG, GcmIntentService.class + " Extras: "+extras.toString());
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                open, PendingIntent.FLAG_UPDATE_CURRENT);
+
         // Build the notification
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
@@ -133,9 +139,8 @@ public class GcmIntentService extends IntentService {
 
         mBuilder.setContentIntent(contentIntent);
 //        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        // Handle multiple instance of notifications with Atomic Integer
         mNotificationManager.notify(GcmController.GCM_ATOMIC_NOTIFICATION_ID.getAndIncrement(), mBuilder.build());
-        Log.i(Constants.TAG, "MSG_ID: "+GcmController.GCM_ATOMIC_NOTIFICATION_ID.get());
-        // TODO
-        // NEED TO HAVE MULTIPLE INSTANCE
+        Log.i(Constants.TAG, GcmIntentService.class+" MSG_ID: "+GcmController.GCM_ATOMIC_NOTIFICATION_ID.get());
     }
 }

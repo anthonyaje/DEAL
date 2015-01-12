@@ -87,13 +87,13 @@ public class SellItem extends ActionBarActivity {
                 int complete = 0;
                 SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
                 String my_id = sp.getString("UserId", "uid not found");
-                String gps_rage = sp.getString("GpsRange", "range not found");
+                String gps_range = sp.getString("GpsRange", "range not found");
                 // create send data to database (GPS, TIME, complete)
                 Offer offer = new Offer();
                 offer.setUser_id(my_id);
                 offer.setHashtag(hashtag);
                 offer.setDetail(desc);
-                offer.setRange(Integer.parseInt(gps_rage));
+                offer.setRange(Integer.parseInt(gps_range));
                 offer.setGpsLat(location.getLatitude());
                 offer.setGpsLong(location.getLongitude());
                 offer.setRequest_time(time);
@@ -135,7 +135,7 @@ public class SellItem extends ActionBarActivity {
                                 Log.i(Constants.TAG, "===============================");
                                 for (DBObject obj : users) {
                                     User u = new User(obj);
-                                    Log.i(Constants.TAG, "Request from : " + u.getUsername());
+                                    Log.i(Constants.TAG, SellItem.class+" Request from  (username) : " + u.getUsername());
                                     String userid = sp.getString("UserId", "null");
                                     Log.d(Constants.TAG, SellItem.class+" UserId : "+userid);
                                     // Send GCM notification

@@ -36,12 +36,24 @@ public class ComposeMessage extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose_message);
         Intent in = getIntent();
-        final String buyer_id = in.getExtras().getString("buyerid");
-        final String seller_id = in.getExtras().getString("sellerid");
-        final String offer_id = in.getExtras().getString("offerid");
-        final String req_id = in.getExtras().getString("reqid");
+        final Bundle extras = in.getExtras();
+        Log.d(Constants.TAG, ComposeMessage.class + " Extras : " + extras.toString());
+        String buyer_id = extras.getString("buyerid");
+        String seller_id = extras.getString("sellerid");
+        String offer_id = extras.getString("offerid");
+        String req_id = extras.getString("reqid");
         Log.d(Constants.TAG, ComposeMessage.class + " buyer_id : " + buyer_id);
         Log.d(Constants.TAG, ComposeMessage.class + " seller_id : " + seller_id);
+        Log.d(Constants.TAG, ComposeMessage.class + " offerid : " + offer_id);
+        Log.d(Constants.TAG, ComposeMessage.class + " reqid : " + req_id);
+        Log.d(Constants.TAG, ComposeMessage.class + " from : " + extras.getString("from"));
+        Log.d(Constants.TAG, ComposeMessage.class + " sender : " + extras.getString("sender"));
+        Log.d(Constants.TAG, ComposeMessage.class + " title : " + extras.getString("title"));
+        Log.d(Constants.TAG, ComposeMessage.class + " message : " + extras.getString("message"));
+        Log.d(Constants.TAG, ComposeMessage.class + " collapse_key : " + extras.getString("collapse_key"));
+        Log.d(Constants.TAG, ComposeMessage.class + " android.support.content.wakelockid : " + extras.getString("android.support.content.wakelockid"));
+        Log.d(Constants.TAG, ComposeMessage.class + " caller_userid : " + extras.getString("caller_userid"));
+
 
         Offer offer = null;
         List<DBObject> dbobj_offer = DbController.getInstance().filterCollection(new Offer().getCollectionName(), new Offer().getColumns()[0], offer_id);
@@ -123,6 +135,10 @@ public class ComposeMessage extends ActionBarActivity {
                     SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
                     String userid = sp.getString("UserId", "null");
                     Message m = new Message();
+                    String buyer_id = extras.getString("buyerid");
+                    String seller_id = extras.getString("sellerid");
+                    String offer_id = extras.getString("offerid");
+                    String req_id = extras.getString("reqid");
                     m.setUser_1(buyer_id);
                     m.setUser_2(seller_id);
                     m.setWho_send(userid);
